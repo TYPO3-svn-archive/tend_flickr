@@ -1,10 +1,8 @@
-<h3>List...</h3>
-
 <div id="flickr_simplelist">
 <ul>
 {foreach from=$photos item="photo"}
-<li class="flickr_photo">
-    <img title="{$photo.title}" src="http://farm{$photo.farm}.static.flickr.com/{$photo.server}/{$photo.id}_{$photo.secret}_t.jpg" />
+<li class="flickr_item">
+    {flickr_image photo=$photo size=box}
 </li>
 {/foreach}
 </ul>

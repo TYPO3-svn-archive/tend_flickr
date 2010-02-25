@@ -23,6 +23,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $this->smarty = tx_smarty::smarty();
         $this->smarty->template_dir = t3lib_div::getFileAbsFileName('EXT:tend_flickr/res/templates');
         $this->smarty->setPathToLanguageFile('EXT:tend_flickr/pi1/locallang.xml');
+        $this->smarty->register_function("flickr_image","tx_tendflickr::smarty_flickr_image");
 
         /* Missing API key */
         if(empty($this->conf_ts["flickr."]["api_key"]))
@@ -30,13 +31,19 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
         /* News tx_tendflickr singlton instance */
         $this->flickr = tx_tendflickr::getInstance();
+
         $this->flickr->setConfig($this->conf_ts["flickr."]["api_key"],
                 $this->conf_ts["flickr."]["api_username"],
                 $this->conf_ts["flickr."]["api_password"]);
 
+        // Cache time
+        $this->flickr->setCacheTime(empty($this->conf_ts["flickr."]["api_cache"])?0:intval($this->conf_ts["flickr."]["api_cache"]));
+
         $display = trim($this->conf_ts["show."]["display"]);
+
         $views = array(
-            array("name"=>"photostream"),array("name"=>"photossearch"),
+            array("name"=>"photostream"),
+            array("name"=>"photossearch"),
         );
 
         $display_s = false;
@@ -68,7 +75,18 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $this->smarty->assign("method",$this->flickr->debugGetLastRestCall());
         return $this->smarty->display("flickr_apierror.xhtml");
     }
-    
+
+    private function addCSS($file_name,$ntmp=""){
+        $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$ntmp."_pp_css"] =
+        '<link href="typo3conf/ext/'.$this->extKey.'/res/css/'.$file_name.'" type="text/css" rel="stylesheet""></link>';
+    }
+
+    private function addJS($js,$js_tmp=""){
+        $tmp_js = file_get_contents(t3lib_extMgm::siteRelPath($this->extKey)."res/js/".$js);
+        $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$js_tmp."_js"]
+                = TSpagegen::inline2TempFile($tmp_js, 'js');
+    }
+
     /* Display photostream */
     private function displayPhotostream(){
 
@@ -81,12 +99,12 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
     /* Display search results */
     private function displayPhotossearch(){
+        $this->addCSS("simplelist.css");
+
         $par = ( $this->conf_ts["show."]["params."]);
 
         $photos = $this->flickr->restFlickr_Photos_Search($par);
         if(!$photos) return $this->callFlickrError();
-
-       // var_dump($photos["photos"]["photo"]);
 
         $this->smarty->assign("photos",$photos["photos"]["photo"]);
 

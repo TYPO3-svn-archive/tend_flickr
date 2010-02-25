@@ -1,0 +1,22 @@
+/* By Oto Brglez - <oto.brglez@tend.si> */
+
+div#flickr_simplelist{
+   display: block;
+   clear:both;
+   float:none;
+}
+
+#flickr_simplelist li.flickr_item,
+#flickr_simplelist .flickr_item img{
+    float:left;
+    display:inline-block;
+    margin:0px;
+    padding:0px;
+}
+
+#flickr_simplelist li.flickr_item{
+    width:75px;
+    height:75px;
+    margin-right:5px;
+    margin-bottom: 5px;
+}
