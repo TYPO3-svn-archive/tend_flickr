@@ -5,10 +5,12 @@
 
 plugin.tx_tendflickr_pi1 {
 
-    
+    flickr {
+        api_key = 2460a66b65f2d13340c9b0f1b975c550
+    }
 
-    display {
-
+    show {
+        method = photostream
     }
 
     pager{

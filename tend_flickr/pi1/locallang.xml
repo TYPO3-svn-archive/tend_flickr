@@ -6,8 +6,10 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="listXXX">Text Position</label>
-			
+			<label index="moj.naslov">Text Position</label>
+			<label index="config.errorMessage">Error in configuration of plugin tx_tendflickr_pi1! Please read documentation!</label>
+                        <label index="config.errorMissingMethod">Requested method does not exist! Perhapse not implemented?! Method: </label>
+                        <label index="config.errorFlickrAPI.title">Flickr API Error!</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -17,7 +17,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'author' => 'Oto Brglez',
 	'author_email' => 'oto.brglez@tend.si',
 	'shy' => '',
-	'dependencies' => 'cms,jquery,jsmanager',
+	'dependencies' => 'cms,smarty,jquery,jsmanager',
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
@@ -33,6 +33,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'cms' => '',
+                        'smarty' => '',
 			'jquery' => '',
 			'jsmanager' => '',
 		),

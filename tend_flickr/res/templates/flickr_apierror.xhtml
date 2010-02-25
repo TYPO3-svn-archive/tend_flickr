@@ -1,0 +1,16 @@
+<div id="tend_flickr" class="typo3api_error">
+
+    <h3>{translate}config.errorFlickrAPI.title{/translate}</h3>
+    <br/>
+    <p>Method: <b>{$method.dbg_rest_method}</b></p>
+    <p>Error stat: <b>{$error.stat}</b></p>
+    <p>Error code: <b>{$error.code}</b></p>
+    <br/>
+    <p>Message: <span style="font-weight:bold; color:red;">{$error.message}</span></p>
+    <br/>
+
+    <p>REST Call URL: <a href="{$method.dbg_rest_callstr}" title="Method: {$method.dbg_rest_method}" target="_blank">
+            {$method.dbg_rest_callstr}</a></p>
+
+    
+</div>
