@@ -10,6 +10,7 @@
 			<label index="config.errorMessage">Error in configuration of plugin tx_tendflickr_pi1! Please read documentation!</label>
                         <label index="config.errorMissingMethod">Requested method does not exist! Perhapse not implemented?! Method: </label>
                         <label index="config.errorFlickrAPI.title">Flickr API Error!</label>
+                        <label index="cache.until">Cached to time: </label>
 		</languageKey>
 	</data>
 </T3locallang>

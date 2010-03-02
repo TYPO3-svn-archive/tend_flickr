@@ -84,20 +84,29 @@ class tx_tendflickr {
             ksort($params);
 
             $params_p = "";
-            foreach($params as $k=>$v) $params_p[] = urlencode($k)."=".urlencode($v);
+            $params_hash = "";
+            $all_hash = "";
+            foreach($params as $k=>$v){ $params_p[] = urlencode($k)."=".urlencode($v);  $params_hash.= $v; };
             $params_p = implode("&",$params_p);
 
-            $params_hash = md5($params_p);
+            $params_hash = md5("irocksecret".$params_hash);
+            $all_hash = md5($params_p);
             $call_str = sprintf("%s%s",$this->flickr_url,$params_p);
 
             $this->dbg_rest_callstr = $call_str;
             $this->dbg_rest_params = $params_p;
 
             $cache_time = $this->getCacheTime();
+            $cache_till = false; // until when the cache is valid
+            
             $this->last_response = false;
+
+
             if($cache_time != 0) {
+                $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_tendflickr_cache',' cache_time < DATE_SUB(NOW(), INTERVAL 7 DAY)' );
+
                 $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("*","tx_tendflickr_cache",
-                        "cache_fingertip = '".$params_hash."' AND
+                        "cache_fingertip = '".$all_hash."' AND
                         cache_time > NOW()
                         LIMIT 1");
 
@@ -105,11 +114,12 @@ class tx_tendflickr {
 
                 if(mysql_num_rows($res) != 0) {
                     $this->last_response =  $data["response"];
+                    $cache_till = $data["cache_time"];
                 } else {
                     $this->last_response = @ file_get_contents($call_str);
-                    $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_tendflickr_cache','cache_fingertip='.$params_hash);
+                    $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_tendflickr_cache',' cache_fingertip=\''.$all_hash.'\'' );
                     $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_tendflickr_cache',
-                            array("cache_fingertip"=>$params_hash,
+                            array("cache_fingertip"=>$all_hash,
                             "cache_time"=> date("c",strtotime("+".$cache_time." second")),
                             "response"=>$this->last_response));
                 }
@@ -118,6 +128,8 @@ class tx_tendflickr {
             };
 
             $this->last_response = unserialize($this->last_response);
+            if($cache_till != false) $this->last_response["cache_till"] = $cache_till;
+            
             return $this->last_response['stat']=='ok'?$this->last_response:false;
         }
     }

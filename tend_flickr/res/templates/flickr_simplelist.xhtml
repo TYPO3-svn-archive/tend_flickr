@@ -7,3 +7,9 @@
 {/foreach}
 </ul>
 </div>
+
+<div id="flickr_info">
+{if $cache_till }
+    {translate}cache.until{/translate}{$cache_till} ({$cache_time_diff})  -
+{/if}Powered by <a href="http://www.tend.org">tend_flickr</a>
+</div>

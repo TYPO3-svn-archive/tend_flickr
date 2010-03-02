@@ -20,3 +20,7 @@ div#flickr_simplelist{
     margin-right:5px;
     margin-bottom: 5px;
 }
+
+#flickr_info{
+    font-size: small;
+}

@@ -107,6 +107,9 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         if(!$photos) return $this->callFlickrError();
 
         $this->smarty->assign("photos",$photos["photos"]["photo"]);
+        $this->smarty->assign("cache_till",$photos["cache_till"]);
+
+        $this->smarty->assign("cache_time_diff", date("i\m s\s",strtotime($photos["cache_till"])-  strtotime("now") ) );
 
         return $this->smarty->display("flickr_simplelist.xhtml");
     }
