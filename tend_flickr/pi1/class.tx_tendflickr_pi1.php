@@ -42,15 +42,19 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $display = trim($this->conf_ts["show."]["display"]);
 
         $views = array(
-            array("name"=>"photostream"),
-            array("name"=>"photossearch"),
+                array("name"=>"photostream"),  // Display user photo stream
+                array("name"=>"photossearch"), // Search by keyword
+                array("name"=>"generic"),      // Generic display
         );
 
         $display_s = false;
-        foreach($views as $view) if($view["name"] == $display){ $display_s = $view; break; }
+        foreach($views as $view) if($view["name"] == $display) {
+                $display_s = $view;
+                break;
+            }
         $display = $display_s!=false?$display_s:$display;
 
-        if(!$display_s){ // If no method is set
+        if(!$display_s) { // If no method is set
             $this->smarty->assign("display",$display);
             return $this->smarty->display("flickr_nodisplay.xhtml");
         }
@@ -61,8 +65,8 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     }
 
     /* Overload of functions */
-    public function __call($method,$params){
-        if(strpos($method, "view", 0)!==false){
+    public function __call($method,$params) {
+        if(strpos($method, "view", 0)!==false) {
             $method = substr($method,strlen("view"));
             $method = "display".ucfirst($method);
             return call_user_func(array($this, $method),$params);
@@ -70,38 +74,99 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     }
 
     /* call error  */
-    private function callFlickrError(){
+    private function callFlickrError() {
         $this->smarty->assign("error",$this->flickr->getLastResponse());
         $this->smarty->assign("method",$this->flickr->debugGetLastRestCall());
         return $this->smarty->display("flickr_apierror.xhtml");
     }
 
-    private function addCSS($file_name,$ntmp=""){
+    private function addCSS($file_name,$ntmp="") {
         $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$ntmp."_pp_css"] =
-        '<link href="typo3conf/ext/'.$this->extKey.'/res/css/'.$file_name.'" type="text/css" rel="stylesheet""></link>';
+                '<link href="typo3conf/ext/'.$this->extKey.'/res/css/'.$file_name.'" type="text/css" rel="stylesheet""></link>';
     }
 
-    private function addJS($js,$js_tmp=""){
+    private function addJS($js,$js_tmp="") {
         $tmp_js = file_get_contents(t3lib_extMgm::siteRelPath($this->extKey)."res/js/".$js);
         $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$js_tmp."_js"]
                 = TSpagegen::inline2TempFile($tmp_js, 'js');
     }
 
-    /* Display photostream */
-    private function displayPhotostream(){
+    /* This function parses rest call from TS for past processing*/
+    public static function ParseTSFlickrCall($val) {
+        /* Name parsing */
+        $name = trim(substr($val,0,strpos($val,"(")));
 
-        $photos = $this->flickr->restFlickr_Photos_Search(array("text"=>"Paris"));
+        /* Argument parsing */
+        $fargs = substr($val,strpos($val,"(")+1,strpos($val,")")-strpos($val,"(")-1);
+
+        $fargs = explode(",",trim($fargs));
+        array_walk($fargs,create_function('&$v,&$k',' $p = explode("=",$v); $v = array(trim($p[0])=>trim($p[1])); '));
+        $fargs_p = array();
+        foreach($fargs as $argp) $fargs_p = array_merge($fargs_p,$argp);
+        $fargs = array_merge($fargs_p);
+        unset($fargs_p);
+
+        /* Post array */
+        $post_array_str = false;
+        if(strpos($val, "[")!==false) $post_array_str = substr($val,strpos($val,"["));
+
+        return array("name"=>$name,"args"=>$fargs,"post_array_str"=>$post_array_str);
+    }
+
+    /* Parse arguments */
+    public static function ParseTSFlickrParams(tx_tendflickr &$flickr,$params) {
+        $params_n = array();
+        foreach($params as $key=>$val) {
+            $params_n[$key] = trim($val);
+            if(strpos($val,"restFlickr")!==false) {
+                $ts_call = tx_tendflickr_pi1::ParseTSFlickrCall($val);
+                $ts_call_data = call_user_func(array($flickr,$ts_call["name"]),$ts_call["args"]);
+
+                //TODO: Check if error from API was made
+                //$flickr->...
+
+                if($ts_call["post_array_str"]!=false)
+                    eval('$ts_call_data = $ts_call_data'.$ts_call["post_array_str"].';');
+
+                $params_n[$key] = $ts_call_data;
+            }
+        }
+
+        return $params_n;
+    }
+
+    private function displayGeneric($method=false){
+        $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
+
+        $photos = call_user_func(array($this->flickr,$this->conf_ts["show."]["call"]),$params);
+
+        //var_dump($photos);
+        $this->smarty->assign("out",var_export($photos,true));
+        
+        return $this->smarty->display("flickr_generic.xhtml");
+    }
+
+    /* Display photostream */
+    private function displayPhotostream() {
+
+        //TODO: Implement...
+
+        $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
+
+        $photos = $this->flickr->restFlickr_Photosets_getList($params);
 
         if(!$photos) return $this->callFlickrError();
+
+        
 
         return $this->smarty->display("flickr_photostream.xhtml");
     }
 
     /* Display search results */
-    private function displayPhotossearch(){
+    private function displayPhotossearch() {
         $this->addCSS("simplelist.css");
 
-        $par = ( $this->conf_ts["show."]["params."]);
+        $par = tx_tendflickr_pi1::ParseTSFlickrParams( $this->conf_ts["show."]["params."]);
 
         $photos = $this->flickr->restFlickr_Photos_Search($par);
         if(!$photos) return $this->callFlickrError();

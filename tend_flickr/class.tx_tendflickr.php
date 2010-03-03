@@ -101,8 +101,8 @@ class tx_tendflickr {
             
             $this->last_response = false;
 
-
             if($cache_time != 0) {
+                /* Remove records older than 1 week */
                 $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_tendflickr_cache',' cache_time < DATE_SUB(NOW(), INTERVAL 7 DAY)' );
 
                 $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("*","tx_tendflickr_cache",

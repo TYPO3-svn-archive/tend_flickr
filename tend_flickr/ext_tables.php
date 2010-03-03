@@ -10,5 +10,6 @@ t3lib_extMgm::addPlugin(array(
 	t3lib_extMgm::extRelPath($_EXTKEY) . 'film.png'
 ),'list_type');
 
-
-$TCA['tx_tendflickr_cache'] = array ();
+// TODO: Please fix this if you know how...
+// $TCA['tx_tendflickr_cache'] = array ();
+t3lib_div::loadTCA('tx_tendflickr_cach');
