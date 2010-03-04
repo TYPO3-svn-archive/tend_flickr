@@ -26,11 +26,10 @@ plugin.tx_tendflickr_pi1 {
 plugin.tx_tendflickr_pi1 {
     flickr {
         api_key = 2460a66b65f2d13340c9b0f1b975c550
-        api_cache = 0
+        api_cache = 120
     }
 
     show {
-        authenticate = 1
         call = restFlickr_Photosets_getList
         display = generic
 
@@ -43,3 +42,5 @@ plugin.tx_tendflickr_pi1 {
     	debugging = false
     }
 }
+
+# photosets

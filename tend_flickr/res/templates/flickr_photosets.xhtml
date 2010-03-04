@@ -1,0 +1,27 @@
+<div id="flickr_photosets">
+    <ul>
+        {foreach from=$photosets item="photoset"}
+        <li class="flickr_photoset">
+            <div class="image">
+                {typo3_link pid=15 url_photoset=$photoset.id url_test=kultest title=$photoset.title._content}
+                    {flickr_image photo=$photoset size=box title=$photoset.title._content alt=$photoset.title._content }
+                {/typo3_link}
+            </div>
+            <div class="desc">
+                <div class="title"><h2>{$photoset.title._content}</h2></div>
+
+                <div class="description">{$photoset.description._content}</div>
+
+                {if $photoset.videos != 0}
+                <div class="videos">Videos: {$photoset.videos}</div>
+                {/if}
+
+                {if $photoset.photos != 0}
+                <div class="photos">Photos: {$photoset.photos}</div>
+                {/if}
+
+            </div>
+        </li>
+        {/foreach}
+    </ul>
+</div>

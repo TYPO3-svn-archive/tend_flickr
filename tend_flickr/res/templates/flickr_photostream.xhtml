@@ -1,8 +1,9 @@
 <p>{translate}moj.naslov{/translate}</p>
 
-{foreach from=$imena item="ime"}
+<div id="flickr_photostream">
+    <ul>
+        {flickr_photostream_image item=test}
 
-<h3>{ $ime.ime }</h3>
+    </ul>
 
-
-{/foreach}
+</div>

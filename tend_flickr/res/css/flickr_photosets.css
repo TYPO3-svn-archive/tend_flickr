@@ -1,0 +1,21 @@
+#flickr_photosets li{
+    width:100%;
+    display:block;
+    margin:0px;
+    float: none;
+    clear: both;
+    border-top:1px solid #ccc;
+    height: 90px;
+    padding-top:10px;
+}
+
+#flickr_photosets .flickr_photoset .image{
+    width:80px;
+    display:inline-block;
+    float:left;
+}
+
+#flickr_photosets .title{
+    font-size: 18px;
+    font-weight: bold;
+}

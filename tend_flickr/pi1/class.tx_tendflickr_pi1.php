@@ -24,6 +24,8 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $this->smarty->template_dir = t3lib_div::getFileAbsFileName('EXT:tend_flickr/res/templates');
         $this->smarty->setPathToLanguageFile('EXT:tend_flickr/pi1/locallang.xml');
         $this->smarty->register_function("flickr_image","tx_tendflickr::smarty_flickr_image");
+        $this->smarty->register_function("flickr_photostream_image","tx_tendflickr::smarty_flickr_photostream_image");
+        $this->smarty->register_block("typo3_link",array($this,'smarty_typo3_link'));
 
         /* Missing API key */
         if(empty($this->conf_ts["flickr."]["api_key"]))
@@ -42,9 +44,10 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $display = trim($this->conf_ts["show."]["display"]);
 
         $views = array(
-                array("name"=>"photostream"),  // Display user photo stream
-                array("name"=>"photossearch"), // Search by keyword
-                array("name"=>"generic"),      // Generic display
+                array("name"=>"photostream"),  //TODO: Display user photo stream
+                array("name"=>"photossearch"), //TODO: Photo search results
+                array("name"=>"photosets"),    // Photosets
+                array("name"=>"generic"),      //TODO: Finish generic display
         );
 
         $display_s = false;
@@ -146,9 +149,22 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         return $this->smarty->display("flickr_generic.xhtml");
     }
 
+    private function displayPhotosets(){
+        $this->addCSS("flickr_photosets.css");
+
+        $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
+        $photosets = $this->flickr->restFlickr_Photosets_getList($params);
+        if(!$photosets) return $this->callFlickrError();
+
+        $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
+
+        //$this->pi_linkTP("Naprej", array("stran"=>$stran+1));
+        
+        return $this->smarty->display("flickr_photosets.xhtml");
+    }
+
     /* Display photostream */
     private function displayPhotostream() {
-
         //TODO: Implement...
 
         $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
@@ -157,8 +173,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
         if(!$photos) return $this->callFlickrError();
 
-        
-
+       
         return $this->smarty->display("flickr_photostream.xhtml");
     }
 
@@ -171,12 +186,23 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $photos = $this->flickr->restFlickr_Photos_Search($par);
         if(!$photos) return $this->callFlickrError();
 
-        $this->smarty->assign("photos",$photos["photos"]["photo"]);
-        $this->smarty->assign("cache_till",$photos["cache_till"]);
-
-        $this->smarty->assign("cache_time_diff", date("i\m s\s",strtotime($photos["cache_till"])-  strtotime("now") ) );
+        $this->smarty->assign("photos", $photos["photos"]["photo"]);
+        $this->smarty->assign("cache_till", $photos["cache_till"]);
+        $this->smarty->assign("cache_time_diff", date("i\m s\s",strtotime($photos["cache_till"])-strtotime("now") ) );
 
         return $this->smarty->display("flickr_simplelist.xhtml");
+    }
+
+    /* Perhapse it should be extended some more... ;) */
+    public function smarty_typo3_link($params, $content, &$smarty, &$repeat){
+        /* if param has url_ then its appended to params of t3 page link call */
+        $url_args= array_filter(array_flip($params),create_function('&$val','if(strpos($val,"url_")!==false) return $val;'));
+        $url_args= array_flip(array_map(create_function('&$v','return $v;'), $url_args));
+
+        if(!$repeat){
+                return '<a href="'.$this->pi_getPageLink(intval($params["pid"]),null,$url_args).'"
+                    title="'.(isset($params["title"])?$params["title"]:"").'">'.$content.'</a>';
+        };
     }
 }
 

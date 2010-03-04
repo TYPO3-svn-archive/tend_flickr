@@ -171,6 +171,8 @@ class tx_tendflickr {
         $title = !empty($params["title"])?trim($params["title"]): $photo["title"];
         $alt = !empty($params["alt"])?trim($params["alt"]): $photo["title"];
         $css_class = !empty($params["class"])?trim($params["class"]): "flickr_image";
+        $photo["id"] = isset($photo["primary"])?$photo["primary"]:$photo["id"];
+
 
         //TODO: Width and height...
         /*
@@ -200,6 +202,11 @@ class tx_tendflickr {
                 $alt, $css_class
                 /*, $width, $height */
         );
+    }
+
+    /* Photostream item */
+    public static function smarty_flickr_photostream_image($params,&$smarty){
+        return "a?";
     }
 
 } // eof class
