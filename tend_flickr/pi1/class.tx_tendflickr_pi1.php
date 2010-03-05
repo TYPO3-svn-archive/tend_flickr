@@ -13,6 +13,13 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     public $conf_ts       = array();
     private $smarty        = false; // Smarty object
     private $flickr        = false; // Flickr API
+    public static $views = array(
+            array("name"=>"photostream","desc"=>"Flickr Photostream"),  //TODO: Display user photo stream
+            array("name"=>"photossearch","desc"=>"Flickr Photos search"), //TODO: Photo search results
+            array("name"=>"photosets","desc"=>"Flickr Photosets"),    // Photosets
+            array("name"=>"viewphotoset","desc"=>"Flickr Photoset"), // View Photoset photos
+            array("name"=>"generic","desc"=>"Generic Display"),      //TODO: Finish generic display
+    );
 
     /* Main function */
     public function main($content, $conf) {
@@ -43,13 +50,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
         $display = trim($this->conf_ts["show."]["display"]);
 
-        $views = array(
-                array("name"=>"photostream"),  //TODO: Display user photo stream
-                array("name"=>"photossearch"), //TODO: Photo search results
-                array("name"=>"photosets"),    // Photosets
-                array("name"=>"viewphotoset"), // View Photoset photos
-                array("name"=>"generic"),      //TODO: Finish generic display
-        );
+        $views = tx_tendflickr_pi1::$views;
 
         $display_s = false;
         foreach($views as $view) if($view["name"] == $display) {
@@ -66,6 +67,20 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         /* Method invoke test*/
         $d = call_user_func(array($this, sprintf("%s%s","view",$display["name"])));
         return $d;
+    }
+
+
+    public function getViewsListForFlexForm($config) {
+        $optionList = array();
+
+        foreach(tx_tendflickr_pi1::$views as $view){
+            $optionList[] = array(1=>$view["name"],0=>sprintf("%s (%s)",$view["desc"],$view["name"]));
+        }
+
+       // $optionList[0] = array(0 => 'option1', 1 => 'value1');
+       // $optionList[1] = array(0 => 'option2', 1 => 'value2');
+
+        return $config['items'] = array_merge($config['items'],$optionList);
     }
 
     /* Overload of functions */
@@ -139,25 +154,25 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         return $params_n;
     }
 
-    private function displayGeneric($method=false){
+    private function displayGeneric($method=false) {
         $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
         $photos = call_user_func(array($this->flickr,$this->conf_ts["show."]["call"]),$params);
         if(!$photos) $this->callFlickrError();
 
         $this->smarty->assign("out",var_export($photos,true));
-        
+
         return $this->smarty->display("flickr_generic.xhtml");
     }
 
     /* Display photos from photoset */
-    private function displayViewphotoset(){
+    private function displayViewphotoset() {
         $this->addCSS("flickr_viewphotoset.css");
 
         /* Display images */
         $photoset_id = null;
-        if(isset($_GET['url_photoset'])){
+        if(isset($_GET['url_photoset'])) {
             $photoset_id = trim($_GET["url_photoset"]);
-        } elseif( isset($this->conf_ts["show."]["params."]["photoset_id"])){
+        } elseif( isset($this->conf_ts["show."]["params."]["photoset_id"])) {
             $photoset_id = $this->conf_ts["show."]["params."]["photoset_id"];
         }
 
@@ -169,7 +184,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         if(!$photosets) $this->callFlickrError();
 
         $ps = array();
-        foreach($photosets["photosets"]["photoset"] as $key=>$val){
+        foreach($photosets["photosets"]["photoset"] as $key=>$val) {
             $val["typo3_uri"] = $this->pi_getPageLink($GLOBALS['TSFE']->id,'',array("url_photoset"=>$val["id"]));
             $ps[$key] = $val;
         };
@@ -178,7 +193,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
         $photoset = $this->flickr->restFlickr_Photosets_getInfo(array("photoset_id"=>$photoset_id));
         if(!$photoset) $this->callFlickrError();
-        
+
         $this->smarty->assign("photoset",$photoset["photoset"]);
         $this->smarty->assign("photos",$photos["photoset"]["photo"]);
         $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
@@ -192,7 +207,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     }
 
     /* Display photosets */
-    private function displayPhotosets(){
+    private function displayPhotosets() {
         $this->addCSS("flickr_photosets.css");
 
         $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
@@ -200,7 +215,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         if(!$photosets) return $this->callFlickrError();
 
         $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
-      
+
         return $this->smarty->display("flickr_photosets.xhtml");
     }
 
@@ -214,7 +229,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
         if(!$photos) return $this->callFlickrError();
 
-       
+
         return $this->smarty->display("flickr_photostream.xhtml");
     }
 
@@ -235,13 +250,13 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     }
 
     /* Perhapse it should be extended some more... ;) */
-    public function smarty_typo3_link($params, $content, &$smarty, &$repeat){
+    public function smarty_typo3_link($params, $content, &$smarty, &$repeat) {
         /* if param has url_ then its appended to params of t3 page link call */
         $url_args= array_filter(array_flip($params),create_function('&$val','if(strpos($val,"url_")!==false) return $val;'));
         $url_args= array_flip(array_map(create_function('&$v','return $v;'), $url_args));
 
-        if(!$repeat){
-                return '<a href="'.$this->pi_getPageLink(intval($params["pid"]),null,$url_args).'"
+        if(!$repeat) {
+            return '<a href="'.$this->pi_getPageLink(intval($params["pid"]),null,$url_args).'"
                     title="'.(isset($params["title"])?$params["title"]:"").'">'.$content.'</a>';
         };
     }
