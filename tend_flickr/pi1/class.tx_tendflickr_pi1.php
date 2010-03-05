@@ -47,6 +47,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
                 array("name"=>"photostream"),  //TODO: Display user photo stream
                 array("name"=>"photossearch"), //TODO: Photo search results
                 array("name"=>"photosets"),    // Photosets
+                array("name"=>"viewphotoset"), // View Photoset photos
                 array("name"=>"generic"),      //TODO: Finish generic display
         );
 
@@ -140,15 +141,57 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
     private function displayGeneric($method=false){
         $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
-
         $photos = call_user_func(array($this->flickr,$this->conf_ts["show."]["call"]),$params);
+        if(!$photos) $this->callFlickrError();
 
-        //var_dump($photos);
         $this->smarty->assign("out",var_export($photos,true));
         
         return $this->smarty->display("flickr_generic.xhtml");
     }
 
+    /* Display photos from photoset */
+    private function displayViewphotoset(){
+        $this->addCSS("flickr_viewphotoset.css");
+
+        /* Display images */
+        $photoset_id = null;
+        if(isset($_GET['url_photoset'])){
+            $photoset_id = trim($_GET["url_photoset"]);
+        } elseif( isset($this->conf_ts["show."]["params."]["photoset_id"])){
+            $photoset_id = $this->conf_ts["show."]["params."]["photoset_id"];
+        }
+
+        $photos = $this->flickr->restFlickr_Photosets_getPhotos(array("photoset_id"=>$photoset_id));
+        if(!$photos) $this->callFlickrError();
+
+        $photosets = false;
+        $photosets = $this->flickr->restFlickr_Photosets_getList(array("user_id"=>$photos["photoset"]["owner"]));
+        if(!$photosets) $this->callFlickrError();
+
+        $ps = array();
+        foreach($photosets["photosets"]["photoset"] as $key=>$val){
+            $val["typo3_uri"] = $this->pi_getPageLink($GLOBALS['TSFE']->id,'',array("url_photoset"=>$val["id"]));
+            $ps[$key] = $val;
+        };
+        $photosets["photosets"]["photoset"] = $ps;
+        unset($ps);
+
+        $photoset = $this->flickr->restFlickr_Photosets_getInfo(array("photoset_id"=>$photoset_id));
+        if(!$photoset) $this->callFlickrError();
+        
+        $this->smarty->assign("photoset",$photoset["photoset"]);
+        $this->smarty->assign("photos",$photos["photoset"]["photo"]);
+        $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
+
+        // var_dump($photosets["photosets"]["photoset"]);
+
+        $this->smarty->assign("photoset_id",$photoset_id);
+
+        if($photoset_id != null) return $this->smarty->display("flickr_viewphotoset.xhtml");
+        return "";
+    }
+
+    /* Display photosets */
     private function displayPhotosets(){
         $this->addCSS("flickr_photosets.css");
 
@@ -157,9 +200,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         if(!$photosets) return $this->callFlickrError();
 
         $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
-
-        //$this->pi_linkTP("Naprej", array("stran"=>$stran+1));
-        
+      
         return $this->smarty->display("flickr_photosets.xhtml");
     }
 

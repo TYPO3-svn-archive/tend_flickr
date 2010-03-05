@@ -25,14 +25,9 @@ class tx_tendflickr {
     protected $cache_time = 0;
     protected $last_response = false;
 
-
     /* Clonning and constructor is disabled */
-    public function  __construct() {
-
-    }
-    public function __clone() {
-
-    }
+    public function  __construct() { }
+    public function __clone() { }
 
     /* Set configuration */
     public function setConfig($api_key,$username=false,$password=false) {
@@ -134,12 +129,10 @@ class tx_tendflickr {
         }
     }
 
-
     public static function strToHex($string) {
         $hex='';
         for ($i=0; $i < strlen($string); $i++)
             $hex .= dechex(ord($string[$i]));
-
         return $hex;
     }
 
@@ -147,7 +140,6 @@ class tx_tendflickr {
         $string='';
         for ($i=0; $i < strlen($hex)-1; $i+=2)
             $string .= chr(hexdec($hex[$i].$hex[$i+1]));
-
         return $string;
     }
 
@@ -203,12 +195,6 @@ class tx_tendflickr {
                 /*, $width, $height */
         );
     }
-
-    /* Photostream item */
-    public static function smarty_flickr_photostream_image($params,&$smarty){
-        return "a?";
-    }
-
 } // eof class
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tend_flickr/class.tx_tendflickr.php'])
