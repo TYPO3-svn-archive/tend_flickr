@@ -14,7 +14,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     private $smarty        = false; // Smarty object
     private $flickr        = false; // Flickr API
     public static $views = array(
-            array("name"=>"photostream","desc"=>"Flickr Photostream"),  //TODO: Display user photo stream
+         //   array("name"=>"photostream","desc"=>"Flickr Photostream"),  //TODO: Display user photo stream
             array("name"=>"photossearch","desc"=>"Flickr Photos search"), //TODO: Photo search results
             array("name"=>"photosets","desc"=>"Flickr Photosets"),    // Photosets
             array("name"=>"viewphotoset","desc"=>"Flickr Photoset"), // View Photoset photos
@@ -76,10 +76,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         foreach(tx_tendflickr_pi1::$views as $view){
             $optionList[] = array(1=>$view["name"],0=>sprintf("%s (%s)",$view["desc"],$view["name"]));
         }
-
-       // $optionList[0] = array(0 => 'option1', 1 => 'value1');
-       // $optionList[1] = array(0 => 'option2', 1 => 'value2');
-
+        
         return $config['items'] = array_merge($config['items'],$optionList);
     }
 

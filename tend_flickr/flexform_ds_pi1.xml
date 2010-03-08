@@ -24,6 +24,7 @@
                     <display>
                         <TCEforms>
                             <label>Display mode</label>
+                            <onChange>reload</onChange>
                             <config>
                                 <type>select</type>
                                 <indexField>title</indexField>
@@ -32,6 +33,93 @@
                             </config>
                         </TCEforms>
                     </display>
+
+                    <!--      <displayCond>FIELD:display:=:photossearch</displayCond>  -->
+
+                    <photossearch_user_id>
+                        <TCEforms>
+                            <label>user_id (optional)</label>
+                            <displayCond>FIELD:display:=:photossearch</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </photossearch_user_id>
+
+                    <photossearch_tags>
+                        <TCEforms>
+                            <label>tags (optional)</label>
+                            <displayCond>FIELD:display:=:photossearch</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </photossearch_tags>
+
+                    <photossearch_tag_mode>
+                        <TCEforms>
+                            <label>tag_mode (optional)</label>
+                            <displayCond>FIELD:display:=:photossearch</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </photossearch_tag_mode>
+
+                    <photossearch_text>
+                        <TCEforms>
+                            <label>text (optional)</label>
+                            <displayCond>FIELD:display:=:photossearch</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </photossearch_text>
+
+                    <photossearch_sort>
+                        <TCEforms>
+                            <label>sort</label>
+                            <displayCond>FIELD:display:=:photossearch</displayCond>
+                            <config>
+                                <type>select</type>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">date-posted-desc</numIndex>
+                                        <numIndex index="1">date-posted-desc</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">relevance</numIndex>
+                                        <numIndex index="1">relevance</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">date-posted-asc</numIndex>
+                                        <numIndex index="1">date-posted-asc</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">date-taken-asc</numIndex>
+                                        <numIndex index="1">date-taken-asc</numIndex>
+                                    </numIndex>
+                                    <numIndex index="4" type="array">
+                                        <numIndex index="0">date-taken-desc</numIndex>
+                                        <numIndex index="1">date-taken-desc</numIndex>
+                                    </numIndex>
+                                    <numIndex index="5" type="array">
+                                        <numIndex index="0">interestingness-desc</numIndex>
+                                        <numIndex index="1">interestingness-desc</numIndex>
+                                    </numIndex>
+                                    <numIndex index="6" type="array">
+                                        <numIndex index="0">interestingness-asc</numIndex>
+                                        <numIndex index="1">interestingness-asc</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </photossearch_sort>
+
                 </el>
             </ROOT>
         </sDEF>
