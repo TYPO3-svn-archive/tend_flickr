@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_tendflickr_pi1&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="moj.naslov">Text Position</label>
+			<label index="config.errorMessage">Error in configuration of plugin tx_tendflickr_pi1! Please read documentation!</label>
+                        <label index="config.errorMissingMethod">Requested method does not exist! Perhapse not implemented?! Method: </label>
+                        <label index="config.errorFlickrAPI.title">Flickr API Error!</label>
+                        <label index="cache.until">Cached to time: </label>
+		</languageKey>
+	</data>
+</T3locallang>

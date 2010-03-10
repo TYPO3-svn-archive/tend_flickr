@@ -3,7 +3,7 @@
         {foreach from=$photosets item="photoset"}
         <li class="flickr_photoset">
             <div class="image">
-                {typo3_link pid=15 url_photoset=$photoset.id title=$photoset.title._content}
+                {typo3_link pid=$pid url_photoset=$photoset.id title=$photoset.title._content}
                     {flickr_image photo=$photoset size=box title=$photoset.title._content alt=$photoset.title._content }
                 {/typo3_link}
             </div>

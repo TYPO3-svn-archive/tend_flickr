@@ -23,4 +23,7 @@ div#flickr_simplelist{
 
 #flickr_info{
     font-size: small;
+    display:block;
+    float:none;
+    clear:both;
 }

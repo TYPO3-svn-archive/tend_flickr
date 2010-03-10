@@ -11,18 +11,34 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     public $extKey        = 'tend_flickr';
     public $pi_checkCHash = true;
     public $conf_ts       = array();
-    private $smarty        = false; // Smarty object
-    private $flickr        = false; // Flickr API
+    public $smarty        = false; // Smarty object
+    public $flickr        = false; // Flickr API
     public static $views = array(
-         //   array("name"=>"photostream","desc"=>"Flickr Photostream"),  //TODO: Display user photo stream
+            //   array("name"=>"photostream","desc"=>"Flickr Photostream"),  //TODO: Display user photo stream
             array("name"=>"photossearch","desc"=>"Flickr Photos search"), //TODO: Photo search results
             array("name"=>"photosets","desc"=>"Flickr Photosets"),    // Photosets
             array("name"=>"viewphotoset","desc"=>"Flickr Photoset"), // View Photoset photos
-            array("name"=>"generic","desc"=>"Generic Display"),      //TODO: Finish generic display
+            array("name"=>"generic","desc"=>"TODO: Generic Display"),      //TODO: Finish generic display
     );
+
+    public function init() {
+        $this->pi_initPIflexForm();
+        $this->ff_conf = array();
+        $piFlexForm = $this->cObj->data['pi_flexform'];
+
+        foreach ( $piFlexForm['data'] as $sheet => $data ) {
+            foreach ( $data as $lang => $value ) {
+                foreach ( $value as $key => $val ) {
+                    $this->ff_conf[$key] = $this->pi_getFFvalue($piFlexForm, $key, $sheet);
+                }
+            }
+        }
+    }
 
     /* Main function */
     public function main($content, $conf) {
+        $this->init();
+
         $this->conf_ts = $conf;
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL();
@@ -34,6 +50,28 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $this->smarty->register_function("flickr_photostream_image","tx_tendflickr::smarty_flickr_photostream_image");
         $this->smarty->register_block("typo3_link",array($this,'smarty_typo3_link'));
 
+        if(empty($this->conf_ts["flickr."]["api_key"])){
+            $this->conf_ts["flickr."] = $this->ff_conf;
+            $this->conf_ts["show."] = $this->ff_conf;
+            
+            $tmp_display = $this->ff_conf["display"];
+            foreach($this->ff_conf as $key=>$val)
+                if(strpos($key,$tmp_display)!==false) if(trim($val)!="")
+                        $this->conf_ts["show."]["params."][substr($key,strlen($tmp_display)+1)] = $val;
+
+            //$pom = array();
+            foreach($this->ff_conf as $key=>$val){
+                if(strpos($key,"smarty_")!==false)
+                        $this->conf_ts["smarty."][substr($key,strlen("smarty_"))] = $val;
+            }
+
+            foreach($this->conf_ts["smarty."] as $key=>$val){
+                $this->smarty->setSmartyVar($key,$val);
+            }
+        }
+
+      
+
         /* Missing API key */
         if(empty($this->conf_ts["flickr."]["api_key"]))
             return $this->smarty->display("flickr_tserror.xhtml");
@@ -41,9 +79,8 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         /* News tx_tendflickr singlton instance */
         $this->flickr = tx_tendflickr::getInstance();
 
-        $this->flickr->setConfig($this->conf_ts["flickr."]["api_key"],
-                $this->conf_ts["flickr."]["api_username"],
-                $this->conf_ts["flickr."]["api_password"]);
+        $this->flickr->setConfig($this->conf_ts["flickr."]["api_key"]
+                /*, $this->conf_ts["flickr."]["api_username"], $this->conf_ts["flickr."]["api_password"]*/);
 
         // Cache time
         $this->flickr->setCacheTime(empty($this->conf_ts["flickr."]["api_cache"])?0:intval($this->conf_ts["flickr."]["api_cache"]));
@@ -67,17 +104,6 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         /* Method invoke test*/
         $d = call_user_func(array($this, sprintf("%s%s","view",$display["name"])));
         return $d;
-    }
-
-
-    public function getViewsListForFlexForm($config) {
-        $optionList = array();
-
-        foreach(tx_tendflickr_pi1::$views as $view){
-            $optionList[] = array(1=>$view["name"],0=>sprintf("%s (%s)",$view["desc"],$view["name"]));
-        }
-        
-        return $config['items'] = array_merge($config['items'],$optionList);
     }
 
     /* Overload of functions */
@@ -132,6 +158,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     /* Parse arguments */
     public static function ParseTSFlickrParams(tx_tendflickr &$flickr,$params) {
         $params_n = array();
+        if($params)
         foreach($params as $key=>$val) {
             $params_n[$key] = trim($val);
             if(strpos($val,"restFlickr")!==false) {
@@ -171,6 +198,8 @@ class tx_tendflickr_pi1 extends tslib_pibase {
             $photoset_id = trim($_GET["url_photoset"]);
         } elseif( isset($this->conf_ts["show."]["params."]["photoset_id"])) {
             $photoset_id = $this->conf_ts["show."]["params."]["photoset_id"];
+        } elseif( isset($this->conf_ts["show."]["vps_default"]) ){
+            $photoset_id = $this->conf_ts["show."]["vps_default"];
         }
 
         $photos = $this->flickr->restFlickr_Photosets_getPhotos(array("photoset_id"=>$photoset_id));
@@ -191,6 +220,10 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $photoset = $this->flickr->restFlickr_Photosets_getInfo(array("photoset_id"=>$photoset_id));
         if(!$photoset) $this->callFlickrError();
 
+
+        $this->smarty->assign("vps_show_picker",$this->conf_ts["show."]["vps_show_picker"]);
+        $this->smarty->assign("vps_show_photoset_list",$this->conf_ts["show."]["vps_show_photoset_list"]);
+        $this->smarty->assign("vps_show_desc",$this->conf_ts["show."]["vps_show_desc"]);
         $this->smarty->assign("photoset",$photoset["photoset"]);
         $this->smarty->assign("photos",$photos["photoset"]["photo"]);
         $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
@@ -211,6 +244,9 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $photosets = $this->flickr->restFlickr_Photosets_getList($params);
         if(!$photosets) return $this->callFlickrError();
 
+        if(isset($this->conf_ts["show."]["params."]["goto_pid"]))
+            $this->smarty->assign("pid",$this->conf_ts["show."]["params."]["goto_pid"]);
+        
         $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
 
         return $this->smarty->display("flickr_photosets.xhtml");
@@ -218,24 +254,18 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
     /* Display photostream */
     private function displayPhotostream() {
-        //TODO: Implement...
-
         $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
-
         $photos = $this->flickr->restFlickr_Photosets_getList($params);
-
         if(!$photos) return $this->callFlickrError();
-
 
         return $this->smarty->display("flickr_photostream.xhtml");
     }
 
     /* Display search results */
     private function displayPhotossearch() {
-        $this->addCSS("simplelist.css");
+        $this->addCSS("flickr_simplelist.css");
 
-        $par = tx_tendflickr_pi1::ParseTSFlickrParams( $this->conf_ts["show."]["params."]);
-
+        $par = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr, $this->conf_ts["show."]["params."]);
         $photos = $this->flickr->restFlickr_Photos_Search($par);
         if(!$photos) return $this->callFlickrError();
 
@@ -252,10 +282,46 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $url_args= array_filter(array_flip($params),create_function('&$val','if(strpos($val,"url_")!==false) return $val;'));
         $url_args= array_flip(array_map(create_function('&$v','return $v;'), $url_args));
 
-        if(!$repeat) {
+        if(!$repeat)
             return '<a href="'.$this->pi_getPageLink(intval($params["pid"]),null,$url_args).'"
                     title="'.(isset($params["title"])?$params["title"]:"").'">'.$content.'</a>';
-        };
+    }
+
+    public function getViewsListForFlexForm(&$config, &$item) {
+        $optionList = array();
+        foreach(tx_tendflickr_pi1::$views as $view) 
+            $optionList[] = array(1=>$view["name"],0=>sprintf("%s (%s)",$view["desc"],$view["name"]));
+
+        return $config['items'] = array_merge($config['items'],$optionList);
+    }
+
+    public function getPhotosetsForFlexForm(&$config, &$item){
+        $api_key = false;
+        $flex = new SimpleXMLElement($config["row"]["pi_flexform"]);
+        $api_key = @ (array)$flex->xpath("/T3FlexForms/data/sheet[@index=\"display\"]//field[@index=\"api_key\"]/value");
+        $api_key = $api_key[0];
+        $user_id = @ (array)$flex->xpath("/T3FlexForms/data/sheet[@index=\"sDEF\"]//field[@index=\"viewphotoset_user_id\"]/value");
+        $user_id = $user_id[0];
+
+        if(trim($api_key)!="" && trim($user_id)!=""){
+            $flickr = tx_tendflickr::getInstance();
+            $flickr->setConfig($api_key);
+            $flickr->setCacheTime(10);
+
+            $params = tx_tendflickr_pi1::ParseTSFlickrParams($flickr,
+                    array("user_id"=>$user_id));
+           
+            $photos = $flickr->restFlickr_Photosets_getList($params);
+            
+            if($photos){
+                $optionList = array();
+                foreach($photos["photosets"]["photoset"] as $photoset)
+                   $optionList[] = array(1=>$photoset["id"], 0=>$photoset["title"]["_content"]);
+
+                return $config['items'] = array_merge($config['items'],$optionList);
+            }
+        }
+        
     }
 }
 

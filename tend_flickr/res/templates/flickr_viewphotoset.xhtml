@@ -1,29 +1,21 @@
-{literal}
+
+{if $vps_show_picker=="1"}{literal}
 <script language="javascript">
 function gotoPage(list) {
     location.href=list.options[list.selectedIndex].value
 }
 </script>
-{/literal}
+{/literal}{/if}
 
 <div id="flickr_viewphotoset">
+    
+    {if $vps_show_desc=="1"}
     <div id="photoset_info">
         <div id="photoset_title"><h1>{$photoset.title._content}</h1></div>
         <div id="photoset_description">{$photoset.description._content}</div>
     </div>
-    <div id="photoset_goto">
-        <form action="" name="photoset_picker">
-            <select id="photosets_list" name="photosets_list" onchange="gotoPage(this.form.elements[0])">
-                {foreach from=$photosets item="photoset"}
-                <option
-                    {if $photoset.id == $photoset_id }selected="selected"{/if}
-                    value="{$photoset.typo3_uri}">{$photoset.title._content}
-                    {if $photoset.photos!=0 } ({$photoset.photos}) {/if}
-                    </option>
-                {/foreach}
-            </select>
-        </form>
-    </div>
+    {/if}
+
     <div id="photoset">
         <ul>
             {foreach from=$photos item="photo"}
@@ -38,6 +30,8 @@ function gotoPage(list) {
             {/foreach}
         </ul>
     </div>
+
+    {if $vps_show_photoset_list=="1"}
     <div id="photoset_links">
         <ul>
             {foreach from=$photosets item="photoset"}
@@ -45,4 +39,22 @@ function gotoPage(list) {
             {/foreach}
         </ul>
     </div>
+    {/if}
+
+    {if $vps_show_picker=="1"}
+    <div id="photoset_goto">
+        <form action="" name="photoset_picker">
+            <select id="photosets_list" name="photosets_list" onchange="gotoPage(this.form.elements[0])">
+                {foreach from=$photosets item="photoset"}
+                <option
+                    {if $photoset.id == $photoset_id }selected="selected"{/if}
+                    value="{$photoset.typo3_uri}">{$photoset.title._content}
+                    {if $photoset.photos!=0 } ({$photoset.photos}) {/if}
+            </option>
+            {/foreach}
+        </select>
+    </form>
+    </div>
+    {/if}
+
 </div>
