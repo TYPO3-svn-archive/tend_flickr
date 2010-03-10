@@ -20,12 +20,30 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
         parent::init();
     }
 
-    public function main($content,$conf){
+    private function preSetDefault(){
+        $this->prefixId      = 'tx_tendflickr_pi2';
+        $this->scriptRelPath = 'pi2/class.tx_tendflickr_pi2.php';
+    }
+
+    public function main($content,$conf) {
+        $this->preSetDefault();
         parent::main($content,$conf);
+        $this->preSetDefault();
+
         $this->smarty->setPathToLanguageFile('EXT:tend_flickr/pi1/locallang.xml');
 
+        return $this->displayUploadForm();
     }
-    
+
+    /* Display upload form */
+    private function displayUploadForm(){
+        $this->smarty->assign("typo3_form",
+                array("action"=>$this->pi_getPageLink($GLOBALS['TSFE']->id), "name"=>$this->prefixId));
+        $this->smarty->assign("upl_use_css","1"); // For TS
+        
+        return $this->smarty->display("flickr_upload.xhtml");
+    }
+
 };
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tend_flickr/pi2/class.tx_tendflickr_pi2.php'])

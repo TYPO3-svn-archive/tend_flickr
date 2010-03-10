@@ -13,8 +13,8 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     public $conf_ts       = array();
     public $smarty        = false; // Smarty object
     public $flickr        = false; // Flickr API
+    
     public static $views = array(
-            //   array("name"=>"photostream","desc"=>"Flickr Photostream"),  //TODO: Display user photo stream
             array("name"=>"photossearch","desc"=>"Flickr Photos search"), //TODO: Photo search results
             array("name"=>"photosets","desc"=>"Flickr Photosets"),    // Photosets
             array("name"=>"viewphotoset","desc"=>"Flickr Photoset"), // View Photoset photos
@@ -65,6 +65,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
                         $this->conf_ts["smarty."][substr($key,strlen("smarty_"))] = $val;
             }
 
+            if(isset($this->conf_ts["smarty."]))
             foreach($this->conf_ts["smarty."] as $key=>$val){
                 $this->smarty->setSmartyVar($key,$val);
             }
@@ -122,12 +123,12 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         return $this->smarty->display("flickr_apierror.xhtml");
     }
 
-    private function addCSS($file_name,$ntmp="") {
+    public function addCSS($file_name,$ntmp="") {
         $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$ntmp."_pp_css"] =
                 '<link href="typo3conf/ext/'.$this->extKey.'/res/css/'.$file_name.'" type="text/css" rel="stylesheet""></link>';
     }
 
-    private function addJS($js,$js_tmp="") {
+    public function addJS($js,$js_tmp="") {
         $tmp_js = file_get_contents(t3lib_extMgm::siteRelPath($this->extKey)."res/js/".$js);
         $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.$js_tmp."_js"]
                 = TSpagegen::inline2TempFile($tmp_js, 'js');
