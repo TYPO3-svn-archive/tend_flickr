@@ -2,6 +2,27 @@
 
 /* By Oto Brglez - <oto.brglez@tend.si> */
 
+if(!isset($_GET["new_window"])) {
+    ?>
+<html>
+    <head></head>
+    <body>
+    <style type="text/css">
+        #pom{ padding: 30px; }
+        input{ display: block; height:50px; line-height: 50px; font-size: 20px; background-color: #0063DC; border:none; color:#fff; }
+    </style>
+    <div id="pom">
+<form>
+    <input type="button" value="Start upload to Flickr..."
+           onClick="window.open('<?= $_SERVER["REQUEST_URI"]; ?>&new_window=not','flickr','width=400,height=400')" />
+</form></div>
+    </body>
+</html>
+    <?php
+
+    exit();
+}//if
+
 unset($MCONF);
 require_once('conf.php');
 require_once($BACK_PATH.'init.php');
@@ -11,11 +32,18 @@ require_once("../OLD/phpFlickr/phpFlickr.php");
 
 
 $f = new phpFlickr("2460a66b65f2d13340c9b0f1b975c550","c85004276e00ba4e");
-$f->auth();
-
+$f->auth("read"); // only need read access
 $token = $f->auth_checkToken();
+$user_nsid = $token['user']['nsid']; // Find the NSID of the authenticated user
 
+var_dump($f);
+/*
+$token = $f->auth_checkToken();
+$nsid = $token['user']['nsid'];
+$photos_url = $f->urls_getUserPhotos($nsid);
+*/
 
+exit();
 
 class tend_flickr_upload extends t3lib_SCbase {
 
@@ -44,7 +72,7 @@ class tend_flickr_upload extends t3lib_SCbase {
 	';
 
         $this->pageinfo = t3lib_BEfunc::readPageAccess($this->id,$this->perms_clause);
-      //  $this->pageinfo = "";
+        //  $this->pageinfo = "";
         $access = is_array($this->pageinfo) ? 1 : 0;
         if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id)) {
             if ($BE_USER->user['admin'] && !$this->id) {
@@ -61,8 +89,8 @@ class tend_flickr_upload extends t3lib_SCbase {
             $this->content.=$this->doc->spacer(5);
             $this->content.=$this->doc->section('',$this->doc->funcMenu($headerSection,
                     t3lib_BEfunc::getFuncMenu($this->id,'SET[function]',
-                            $this->MOD_SETTINGS['function'],
-                            $this->MOD_MENU['function'])));
+                    $this->MOD_SETTINGS['function'],
+                    $this->MOD_MENU['function'])));
             $this->content.=$this->doc->divider(5);
 
             // Render content:
@@ -91,15 +119,15 @@ class tend_flickr_upload extends t3lib_SCbase {
 
                 $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,title,description,photo,author,upload_timestamp','tx_tendflickr_photo','uid='.intval($id));
                 $data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-                
 
 
 
 
-$content = '
+
+                $content = '
     <h3>Tools</h3>
 <a href="../../../../typo3/alt_doc.php?edit[tx_tendflickr_photo]['.$id.']=edit">Edit Photo</a><br/>';
-$content .= "<h3>Photo data</h3>
+                $content .= "<h3>Photo data</h3>
 
 <style>
 
@@ -129,9 +157,9 @@ $content .= "<h3>Photo data</h3>
     </tr>
 </thead><tbody>
 ";
-foreach($data as $key=>$val){
+                foreach($data as $key=>$val) {
 
-    $content .= "
+                    $content .= "
         <tr>
             <td>".trim($key)."</td>
             <td>".trim($val)."</td>
@@ -139,9 +167,9 @@ foreach($data as $key=>$val){
     ";
 
 
-}
+                }
 
-$content .="</tbody></table>
+                $content .="</tbody></table>
 
 <br/>
 <a href=\"../../../../typo3/alt_doc.php?edit[tx_tendflickr_photo][$id]=edit\">Edit Photo</a><br/>
@@ -169,3 +197,4 @@ $SOBE = t3lib_div::makeInstance('tend_flickr_upload');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();
+
