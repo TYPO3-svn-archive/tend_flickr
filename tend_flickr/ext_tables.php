@@ -33,9 +33,10 @@ if (TYPO3_MODE == 'BE')	{
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pi1', 'FILE:EXT:'.$_EXTKEY.'/pi1/flexform_ds_pi1.xml');
 
 /* Backend extensions */
-if (TYPO3_MODE=="BE")
-    $TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_sampleflex_pi1_wizicon"]
-        =t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_sampleflex_pi1_wizicon.php';
+// Whats this dude?! Gives problems on 4.3...
+// if (TYPO3_MODE=="BE")
+//    $TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_sampleflex_pi1_wizicon"]
+//        =t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_sampleflex_pi1_wizicon.php';
 
 /* Tables */
 t3lib_extMgm::allowTableOnStandardPages('tx_tendflickr_photo');

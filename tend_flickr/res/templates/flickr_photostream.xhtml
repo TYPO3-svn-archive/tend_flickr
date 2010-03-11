@@ -3,6 +3,7 @@
         {foreach from=$photos item="photo"}
         <li class="flickr_item">
             {flickr_link photo=$photo target=_blank} {flickr_image photo=$photo size=box} {/flickr_link}
+            <span class="title">{$photo.title}</span>
         </li>
         {/foreach}
     </ul>

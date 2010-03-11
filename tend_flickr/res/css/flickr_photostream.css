@@ -5,10 +5,24 @@
     clear:both;
 }
 
+img{ border:none; }
+
 #flickr_photostream li{
     display:inline-block;
     float:left;
     margin: 2px;
+    width:75px;
+    height:140px;
+    overflow:hidden;
+}
+
+#flickr_photostream a{
+	border:none;
+	display:block;
+}
+
+#flickr_photostream span{
+	float:left;
 }
 
 #flickr_photostream:after{
