@@ -1,9 +1,9 @@
-<p>{translate}moj.naslov{/translate}</p>
-
 <div id="flickr_photostream">
     <ul>
-        {flickr_photostream_image item=test}
-
+        {foreach from=$photos item="photo"}
+        <li class="flickr_item">
+            {flickr_link photo=$photo target=_blank} {flickr_image photo=$photo size=box} {/flickr_link}
+        </li>
+        {/foreach}
     </ul>
-
 </div>

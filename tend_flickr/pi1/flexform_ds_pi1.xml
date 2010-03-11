@@ -30,7 +30,7 @@
                         photossearch
 
                     -->
-                    
+
                     <photossearch_user_id>
                         <TCEforms>
                             <label>user_id (Must be NSID!) (optional)</label>
@@ -160,7 +160,7 @@
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>Photoset view</label>
-                             <displayCond>FIELD:display:=:photosets</displayCond>
+                            <displayCond>FIELD:display:=:photosets</displayCond>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -204,7 +204,7 @@
 
 
                     <vps_show_picker>
-                          <TCEforms>
+                        <TCEforms>
                             <label>Show photoset picker</label>
                             <displayCond>FIELD:display:=:viewphotoset</displayCond>
                             <config>
@@ -215,7 +215,7 @@
                     </vps_show_picker>
 
                     <vps_show_photoset_list>
-                          <TCEforms>
+                        <TCEforms>
                             <label>Show photoset list</label>
                             <displayCond>FIELD:display:=:viewphotoset</displayCond>
                             <config>
@@ -224,7 +224,7 @@
                             </config>
                         </TCEforms>
                     </vps_show_photoset_list>
-                    
+
                     <vps_default>
                         <TCEforms>
                             <label>Default photoset</label>
@@ -238,13 +238,53 @@
                         </TCEforms>
                     </vps_default>
 
+                    <!--
+
+                        photostream
+
+                    -->
+
+                    <photostream_user_id>
+                        <TCEforms>
+                            <label>user_id (Must be NSID!) (required)</label>
+                            <displayCond>FIELD:display:=:photostream</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>restFlickr_People_findByUsername(username=Oto Brglez)["user"]["nsid"]</default>
+                            </config>
+                        </TCEforms>
+                    </photostream_user_id>
+
+                     <photostream_per_page>
+                        <TCEforms>
+                            <label>per_page (optional)</label>
+                            <displayCond>FIELD:display:=:photostream</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                            </config>
+                        </TCEforms>
+                    </photostream_per_page>
+
+                    <photostream_page>
+                        <TCEforms>
+                            <label>page (optional)</label>
+                            <displayCond>FIELD:display:=:photostream</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                            </config>
+                        </TCEforms>
+                    </photostream_page>
+
                 </el>
             </ROOT>
         </sDEF>
         <!--
 
             DISPLAY
-            
+
         -->
         <display>
             <ROOT>
@@ -257,11 +297,21 @@
                         <TCEforms>
                             <label>Flickr API Key</label>
                             <config>
+
                                 <type>input</type>
                                 <size>32</size>
                             </config>
                         </TCEforms>
                     </api_key>
+                    <api_secret>
+                        <TCEforms>
+                            <label>Flickr API Secret</label>
+                            <config>
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </api_secret>
                     <api_cache>
                         <TCEforms>
                             <label>Flickr Response Cache time (in seconds)</label>

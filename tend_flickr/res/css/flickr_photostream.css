@@ -1,0 +1,18 @@
+#flickr_photostream ul{
+    display:block;
+    width:100%;
+    float:none;
+    clear:both;
+}
+
+#flickr_photostream li{
+    display:inline-block;
+    float:left;
+    margin: 2px;
+}
+
+#flickr_photostream:after{
+    clear:both;
+    float:none;
+    display:none;
+}
