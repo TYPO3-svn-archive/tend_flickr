@@ -1,10 +1,4 @@
-{literal}
-<script language="javascript" type="text/javascript">
-    $(document).ready(function(){
-        $("#flickr_photostream .flickr_item a").colorbox({});
-    })
-</script>
-{/literal}
+{$templateData.preContent}
 
 <div id="flickr_photostream">
     <ul>
@@ -18,3 +12,5 @@
         {/foreach}
     </ul>
 </div>
+
+{$templateData.postContent}
