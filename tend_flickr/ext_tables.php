@@ -6,6 +6,7 @@ if (!defined ('TYPO3_MODE')) die ('Access denied.');
 include_once(t3lib_extMgm::extPath($_EXTKEY).'class.tx_tendflickr.php');
 include_once(t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_tendflickr_pi1.php');
 include_once(t3lib_extMgm::extPath($_EXTKEY).'pi2/class.tx_tendflickr_pi2.php');
+include_once(t3lib_extMgm::extPath($_EXTKEY).'class.tx_tendflickr_displayhook.php');
 
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='layout,select_key,pages';

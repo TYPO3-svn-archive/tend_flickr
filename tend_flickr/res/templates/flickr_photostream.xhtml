@@ -1,8 +1,18 @@
+{literal}
+<script language="javascript" type="text/javascript">
+    $(document).ready(function(){
+        $("#flickr_photostream .flickr_item a").colorbox({});
+    })
+</script>
+{/literal}
+
 <div id="flickr_photostream">
     <ul>
         {foreach from=$photos item="photo"}
         <li class="flickr_item">
-            {flickr_link photo=$photo target=_blank} {flickr_image photo=$photo size=box} {/flickr_link}
+           {flickr_link photo=$photo targetType=image target=_blank rel=tendx }
+              {flickr_image photo=$photo size=box}
+           {/flickr_link}
             <span class="title">{$photo.title}</span>
         </li>
         {/foreach}
