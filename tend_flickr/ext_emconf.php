@@ -29,13 +29,11 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => 'ORG. TEND d.o.o.',
-	'version' => '0.0.0',
+	'version' => '1.0.2',
 	'constraints' => array(
 		'depends' => array(
 			'cms' => '',
                         'smarty' => '',
-			'jquery' => '',
-			'jsmanager' => '',
 		),
 		'conflicts' => array(
 		),

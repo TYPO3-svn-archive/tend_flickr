@@ -282,7 +282,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         $hook_name = "preDisplay".ucfirst($this->view_p)."Hook";
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tend_flickr'][$hook_name]))
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tend_flickr'][$hook_name] as $cRef)
-             $obj = & t3lib_div::callUserFunction($cRef,&$this->smarty,&$this);
+             $obj = & t3lib_div::callUserFunction($cRef,$this->smarty,$this);
 
         return $this->smarty->display($template);
     }
