@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sDEF>
+
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Show</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                    <el>
+                  <goto_pid>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>Upload to page (PID)</label>
+                            <!-- <displayCond>FIELD:display:=:photosets</displayCond> -->
+                            <config>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>3</size>
+                                <maxitems>22</maxitems>
+                                <minitems>0</minitems>
+                                <show_thumbs>1</show_thumbs>
+                            </config>
+                        </TCEforms>
+                    </goto_pid>
+
+
+                </el>
+            </ROOT>
+        </sDEF>
+        <!--
+
+            DISPLAY
+
+        -->
+        <display>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Flickr</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <api_key>
+                        <TCEforms>
+                            <label>Flickr API Key</label>
+                            <config>
+
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </api_key>
+                    <api_secret>
+                        <TCEforms>
+                            <label>Flickr API Secret</label>
+                            <config>
+                                <type>input</type>
+                                <size>32</size>
+                            </config>
+                        </TCEforms>
+                    </api_secret>
+                    <api_cache>
+                        <TCEforms>
+                            <label>Flickr Response Cache time (in seconds)</label>
+                            <config>
+                                <type>input</type>
+                                <size>10</size>
+                                <default>100</default>
+                                <eval>num</eval>
+                            </config>
+                        </TCEforms>
+
+                    </api_cache>
+                </el>
+            </ROOT>
+        </display>
+        <!--
+
+            SMARTY
+
+        -->
+        <smarty>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Smarty</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <smarty_debugging>
+                        <TCEforms>
+                            <label>debugging</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </smarty_debugging>
+
+                    <smarty_template_dir>
+                        <TCEforms>
+                            <label>Template directory</label>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>EXT:tend_flickr/res/templates</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_template_dir>
+                    <smarty_error_reporting>
+                        <TCEforms>
+                            <label>error_reporting</label>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>E_ALL</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_error_reporting>
+
+                    <smarty_debugging_ctrl>
+                        <TCEforms>
+                            <label>debugging_ctrl</label>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>NONE</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_debugging_ctrl>
+
+                    <smarty_debug_tpl>
+                        <TCEforms>
+                            <label>debug_tpl</label>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>EXT:smarty/debug/smarty_debug.tpl</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_debug_tpl>
+
+                    <smarty_compile_check>
+                        <TCEforms>
+                            <label>compile_check</label>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_compile_check>
+
+
+                    <smarty_force_compile>
+                        <TCEforms>
+                            <label>force_compile</label>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_force_compile>
+
+                    <smarty_caching>
+                        <TCEforms>
+                            <label>caching</label>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_caching>
+
+
+                    <smarty_plugins_dir>
+                        <TCEforms>
+                            <label>plugins_dir</label>
+                            <config>
+                                <type>input</type>
+                                <default>EXT:smarty/typo3_plugins</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_plugins_dir>
+
+                    <smarty_cache_dir>
+                        <TCEforms>
+                            <label>cache_dir</label>
+                            <config>
+                                <type>input</type>
+                                <default>typo3temp/smarty_cache</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_cache_dir>
+
+                    <smarty_compile_dir>
+                        <TCEforms>
+                            <label>compile_dir</label>
+                            <config>
+                                <type>input</type>
+                                <default>typo3temp/smarty_compile</default>
+                            </config>
+                        </TCEforms>
+                    </smarty_compile_dir>
+
+                </el>
+            </ROOT>
+        </smarty>
+    </sheets>
+</T3DataStructure>
