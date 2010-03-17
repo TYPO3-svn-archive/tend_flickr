@@ -16,6 +16,8 @@ CREATE TABLE tx_tendflickr_photo (
 	author varchar(255) DEFAULT '' NOT NULL,
 	photo text,
 	flickr_meta varchar(255) DEFAULT '' NOT NULL,
+        flickr_mail varchar(255) DEFAULT '' NOT NULL,
+        from_mail varchar(255) DEFAULT '' NOT NULL,
 	upload_timestamp int(11) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (uid),
 	KEY parent (pid)

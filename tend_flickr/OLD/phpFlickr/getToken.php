@@ -8,12 +8,24 @@
      * the class.
      */
 
+$api_key                 = "2460a66b65f2d13340c9b0f1b975c550";
+$api_secret              = "c85004276e00ba4e";
+
+
+var_dump($_SERVER['REQUEST_URI']);
+exit;
+
     require_once("phpFlickr.php");
-    $f = new phpFlickr("<api key>", "<secret>");
+    $f = new phpFlickr($api_key,$api_secret);
     
     //change this to the permissions you will need
-    $f->auth("read");
+    if (empty($_GET['frob'])) {
+        $f->auth("read",false);
+    } else {
+        $token = $f->auth_getToken($_GET['frob']);
+        echo "use this token to authenticate: ".$token['token'];
+    }
     
-    echo "Copy this token into your code: " . $_SESSION['phpFlickr_auth_token'];
+   // echo "Copy this token into your code: " . $_SESSION['phpFlickr_auth_token'];
     
 ?>

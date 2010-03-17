@@ -4,8 +4,6 @@
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once( dirname(__file__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."class.tx_tendflickr.php");
-# require_once( dirname(__file__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."pi1".DIRECTORY_SEPARATOR."class.tx_tendflickr.php");
-
 
 class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
     public $prefixId      = 'tx_tendflickr_pi2';
@@ -15,11 +13,6 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
     public $conf_ts       = array();
     public $smarty        = false; // Smarty object
     public $flickr        = false; // Flickr API
-
-    /*
-    public function init() {
-        parent::init();
-    }*/
 
     private function preSetDefault() {
         $this->prefixId      = 'tx_tendflickr_pi2';
@@ -39,6 +32,7 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
 
     /* Display upload form */
     private function displayUploadForm() {
+
         $this->smarty->assign("typo3_form",
                 array("action"=>$this->pi_getPageLink($GLOBALS['TSFE']->id), "name"=>$this->prefixId));
 
@@ -64,7 +58,10 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
         };
 
         if($error==false) {
-             $data = array_merge($data,array("crdate"=>time(),"tstamp"=>time(),"photo"=>$file_name));
+             $data = array_merge($data,array("crdate"=>time(),"tstamp"=>time(),"photo"=>$file_name,
+                 "flickr_mail"=>$this->conf_ts["flickr."]["email"],
+                 "from_mail"=>$this->conf_ts["flickr."]["from_mail"],
+                 ));
              $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_tendflickr_photo',$data);
         }
 
@@ -73,9 +70,6 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
         $this->smarty->assign("upl_use_css","1"); // For TS
         $this->smarty->assign("pid",($this->conf_ts["flickr."]["goto_pid"]));
         $this->smarty->assign("data",$this->piVars);
-
-
-        //var_dump($this->piVars);
 
         return $this->smarty->display("flickr_upload.xhtml");
     }

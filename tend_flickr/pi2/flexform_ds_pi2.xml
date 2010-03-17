@@ -11,8 +11,8 @@
                     <sheetTitle>Show</sheetTitle>
                 </TCEforms>
                 <type>array</type>
-                    <el>
-                  <goto_pid>
+                <el>
+                    <goto_pid>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>Upload to page (PID)</label>
@@ -28,6 +28,26 @@
                             </config>
                         </TCEforms>
                     </goto_pid>
+                    <email><!--   -->
+                        <TCEforms>
+                            <label>Flickr upload mail</label>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>(....)@photos.flickr.com</default>
+                            </config>
+                        </TCEforms>
+                    </email>
+                    <from_mail><!--   -->
+                        <TCEforms>
+                            <label>Flickr sent from email</label>
+                            <config>
+                                <type>input</type>
+                                <size>50</size>
+                                <default>(....)@myhost...</default>
+                            </config>
+                        </TCEforms>
+                    </from_mail>
 
 
                 </el>

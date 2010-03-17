@@ -59,6 +59,24 @@ $TCA['tx_tendflickr_photo'] = array (
 				'eval' => 'trim',
 			)
 		),
+                'flickr_mail' => array (
+			'exclude' => 0,
+			'label' => 'Flickr Mail',
+			'config' => array (
+				'type' => 'input',
+				'size' => '50',
+				'eval' => 'required,trim',
+			)
+		),
+                'from_mail' => array (
+			'exclude' => 0,
+			'label' => 'From email',
+			'config' => array (
+				'type' => 'input',
+				'size' => '50',
+				'eval' => 'required,trim',
+			)
+		),
 		'upload_timestamp' => array (		
 			'exclude' => 0,		
 			'label' => 'Upload timestamp',

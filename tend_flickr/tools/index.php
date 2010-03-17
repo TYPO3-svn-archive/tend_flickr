@@ -2,26 +2,6 @@
 
 /* By Oto Brglez - <oto.brglez@tend.si> */
 
-if(!isset($_GET["new_window"])) {
-    ?>
-<html>
-    <head></head>
-    <body>
-    <style type="text/css">
-        #pom{ padding: 30px; }
-        input{ display: block; height:50px; line-height: 50px; font-size: 20px; background-color: #0063DC; border:none; color:#fff; }
-    </style>
-    <div id="pom">
-<form>
-    <input type="button" value="Start upload to Flickr..."
-           onClick="window.open('<?= $_SERVER["REQUEST_URI"]; ?>&new_window=not','flickr','width=400,height=400')" />
-</form></div>
-    </body>
-</html>
-    <?php
-
-    exit();
-}//if
 
 unset($MCONF);
 require_once('conf.php');
@@ -29,21 +9,6 @@ require_once($BACK_PATH.'init.php');
 require_once($BACK_PATH.'template.php');
 require_once(PATH_t3lib.'class.t3lib_scbase.php');
 require_once("../OLD/phpFlickr/phpFlickr.php");
-
-
-$f = new phpFlickr("2460a66b65f2d13340c9b0f1b975c550","c85004276e00ba4e");
-$f->auth("read"); // only need read access
-$token = $f->auth_checkToken();
-$user_nsid = $token['user']['nsid']; // Find the NSID of the authenticated user
-
-var_dump($f);
-/*
-$token = $f->auth_checkToken();
-$nsid = $token['user']['nsid'];
-$photos_url = $f->urls_getUserPhotos($nsid);
-*/
-
-exit();
 
 class tend_flickr_upload extends t3lib_SCbase {
 
@@ -117,67 +82,122 @@ class tend_flickr_upload extends t3lib_SCbase {
             case 1:
                 $id = $_GET["id"];
 
-                $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,title,description,photo,author,upload_timestamp','tx_tendflickr_photo','uid='.intval($id));
+                $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('
+                    uid,title,description,photo,author,
+                    upload_timestamp,
+                    flickr_mail,from_mail',
+                    'tx_tendflickr_photo','uid='.intval($id));
+                
                 $data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 
+                if(!empty($_GET["send"]) && $_GET["send"]=="flickr"){
+
+                      // $to = "otobrglez@gmail.com";
+                      $to = $data["flickr_mail"];
+                      $from = $data["from_mail"];
+                      $file = "../../../../uploads/tx_tendflickr/".$data["photo"];
+                      $subject = $data["title"];
+                      $random_hash = md5(date('r', time()));
+
+                      $headers = "From: ".$from."\r\nReply-To: ".$from;
+                      $headers .= "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-".$random_hash."\"";
+
+                      $attachment = chunk_split(base64_encode(file_get_contents($file)));
+//echo "<pre>";
+$output = "
+--PHP-mixed-$random_hash;
+Content-Type: multipart/alternative; boundary='PHP-alt-$random_hash'
+--PHP-alt-$random_hash
+Content-Type: text/plain; charset='iso-8859-1'
+Content-Transfer-Encoding: 7bit
+
+".$data["description"]."
+
+--PHP-alt-$random_hash
+Content-Type: text/html; charset='iso-8859-1'
+Content-Transfer-Encoding: 7bit
+
+".nl2br($data["description"])."
+
+--PHP-alt-$random_hash--
+
+--PHP-mixed-$random_hash
+Content-Type: application/zip; name=".basename($file)."
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment
+
+$attachment
+--PHP-mixed-$random_hash--";
 
 
+                @ mail($to, $subject, $output, $headers);
+
+                   $content = "<font style=\"color:red; font-weight:bold; font-size:20px;\">Sent to Flickr...</font><br/>";
+                }; // MAIL
 
 
-                $content = '
-    <h3>Tools</h3>
-<a href="../../../../typo3/alt_doc.php?edit[tx_tendflickr_photo]['.$id.']=edit">Edit Photo</a><br/>';
+                $content .= '
+                    <h3>Tools</h3>
+                <a href="../../../../typo3/alt_doc.php?edit[tx_tendflickr_photo]['.$id.']=edit">Edit Photo</a> |
+                <a href="index.php?id='.$id.'&send=flickr">Send to Flickr</a> <br/>
+                ';
+
                 $content .= "<h3>Photo data</h3>
 
-<style>
+                <style>
 
-.data, .data td, .data tr, .data .th{
-    border-collapse:collapse;
-}
+                .data, .data td, .data tr, .data .th{
+                    border-collapse:collapse;
+                }
 
-.data{
-    border-left:1px solid #CCC;
-    border-top:1px solid #CCC;
-}
+                .data{
+                    border-left:1px solid #CCC;
+                    border-top:1px solid #CCC;
+                }
 
-.data td,
-.data th{
-    border-bottom:1px solid #CCC;
-    border-right:1px solid #CCC;
-    padding:5px;
-}
+                .data td,
+                .data th{
+                    border-bottom:1px solid #CCC;
+                    border-right:1px solid #CCC;
+                    padding:5px;
+                }
 
-</style>
+                </style>
 
-<table class=\"data\">
-<thead>
-    <tr>
-        <th>Key</th>
-        <th>Value</th>
-    </tr>
-</thead><tbody>
-";
+                <table class=\"data\">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead><tbody>
+                ";
                 foreach($data as $key=>$val) {
 
-                    $content .= "
-        <tr>
-            <td>".trim($key)."</td>
-            <td>".trim($val)."</td>
-        </tr>
-    ";
-
-
+                                $content .= "
+                    <tr>
+                        <td>".trim($key)."</td>
+                        <td>".trim($val)."</td>
+                    </tr>
+                ";
                 }
 
                 $content .="</tbody></table>
 
-<br/>
-<a href=\"../../../../typo3/alt_doc.php?edit[tx_tendflickr_photo][$id]=edit\">Edit Photo</a><br/>
+                <br/>
+                <a href=\"../../../../typo3/alt_doc.php?edit[tx_tendflickr_photo][$id]=edit\">Edit Photo</a> |
+                <a href=\"index.php?id=$id&send=flickr\">Send to Flickr</a> <br/>
 
+                <h3>".$data["photo"]."</h3>
+                    <style>
 
-<h3>".$data["photo"]."</h3>
-    <img src=\"../../../../uploads/tx_tendflickr/".$data["photo"]."\"/>
-";
+                    #photo{ display: block; width:90%; height:auto;}
+                    #photo img{ width: 100%; }
+                    </style>
+                    <div id=\"photo\">
+                        <img src=\"../../../../uploads/tx_tendflickr/".$data["photo"]."\"/>
+                    </div>
+                ";
 
 
 

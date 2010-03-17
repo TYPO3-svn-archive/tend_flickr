@@ -17,11 +17,9 @@ class tx_tendflickr_eid extends tslib_pibase {
         $GLOBALS['TSFE']->fe_user = tslib_eidtools::initFeUser();
         tslib_eidtools::connectDB();
 
-        switch($_GET["action"]){
-          case "":
-              
-
-              break;
+        switch($_GET["action"]) {
+            case "flickr_upload":
+                break;
         };
     }
 }
