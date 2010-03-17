@@ -9,35 +9,46 @@
 {/literal}{/if}
 
 <div id="flickr_upload" class="{$typo3_form.name}">
-    <form name="{$typo3_form.name}" action="{$typo3_form.action}" method="post" class="{$typo3_form.name}">
+    {if $done }
+
+    <div id="status" class="done">
+        <font style="color:red; font-weight: bold;">Saved... //TODO: Tukaj pripravite ustrezno besedilo!<br/></font>
+    </div>
+
+    {/if}
+
+
+    <form name="{$typo3_form.name}" action="{$typo3_form.action}" method="post" class="{$typo3_form.name}" enctype="multipart/form-data">
         <ul>
             <li>
                 <label>
-                    <span class="label">Title</span>
-                    <input name="{$typo3_form.name}[title]" id="{$typo3_form.name}[title]" type="text" />
+                    <span class="label">Title {if !$data.title}*{/if}</span>
+                    <input name="{$typo3_form.name}[title]" id="{$typo3_form.name}[title]" type="text" value="{$data.title}"/>
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Description</span>
-                    <textarea name="{$typo3_form.name}[description]" id="{$typo3_form.name}[description]" cols="40" rows="5"></textarea>
+                    <span class="label">Description {if !$data.description}*{/if}</span>
+                    <textarea name="{$typo3_form.name}[description]" id="{$typo3_form.name}[description]" cols="40" rows="5">{$data.description}</textarea>
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Author</span>
-                    <input name="{$typo3_form.name}[author]" id="{$typo3_form.name}[author]" />
+                    <span class="label">Author {if !$data.author}*{/if}</span>
+                    <input name="{$typo3_form.name}[author]" id="{$typo3_form.name}[author]" value="{$data.author}"/>
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Photo</span>
+                    <span class="label">Photo {if !$data.photo}*{/if}</span>
                     <input name="{$typo3_form.name}[photo]" id="{$typo3_form.name}[photo]" type="file" />
                 </label>
             </li>
             <li>
                 <label>
                     <span class="label">Upload</span>
+                    <input name="{$typo3_form.name}[pid]" id="{$typo3_form.name}[pid]" type="hidden" value="{$pid}"/>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
                     <input name="{$typo3_form.name}[submit]" id="{$typo3_form.name}[submit]" type="submit" value="Upload photo..." />
                 </label>
 

@@ -16,11 +16,11 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     public $view_p        = false;
 
     public static $views = array(
-            array("name"=>"photossearch","desc"=>"Flickr Photos search"), //Photo search results
-            array("name"=>"photosets","desc"=>"Flickr Photosets"),    // Photosets
-            array("name"=>"viewphotoset","desc"=>"Flickr Photoset"), // View Photoset photos
+            array("name"=>"photossearch","desc"=>"Flickr Photos search"),   // Photo search results
+            array("name"=>"photosets","desc"=>"Flickr Photosets"),          // Photosets
+            array("name"=>"viewphotoset","desc"=>"Flickr Photoset"),        // View Photoset photos
             array("name"=>"photostream","desc"=>"Flickr User Photostream"), // Display photostream
-            array("name"=>"generic","desc"=>"TODO: Generic Display"),      //TODO: Finish generic display
+            array("name"=>"generic","desc"=>"TODO: Generic Display"),       // TODO: Finish generic display
     );
 
     public function init() {
@@ -164,8 +164,7 @@ class tx_tendflickr_pi1 extends tslib_pibase {
                     $ts_call = tx_tendflickr_pi1::ParseTSFlickrCall($val);
                     $ts_call_data = call_user_func(array($flickr,$ts_call["name"]),$ts_call["args"]);
 
-                    if($ts_call["post_array_str"]!=false)
-                        eval('$ts_call_data = $ts_call_data'.$ts_call["post_array_str"].';');
+                    if($ts_call["post_array_str"]!=false) eval('$ts_call_data = $ts_call_data'.$ts_call["post_array_str"].';');
 
                     $params_n[$key] = $ts_call_data;
                 }
@@ -241,7 +240,6 @@ class tx_tendflickr_pi1 extends tslib_pibase {
             $this->smarty->assign("pid",$this->conf_ts["show."]["params."]["goto_pid"]);
 
         $this->smarty->assign("photosets",$photosets["photosets"]["photoset"]);
-
         return $this->smarty_display("flickr_photosets.xhtml");
     }
 

@@ -16,31 +16,67 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
     public $smarty        = false; // Smarty object
     public $flickr        = false; // Flickr API
 
+    /*
     public function init() {
         parent::init();
-    }
+    }*/
 
-    private function preSetDefault(){
+    private function preSetDefault() {
         $this->prefixId      = 'tx_tendflickr_pi2';
         $this->scriptRelPath = 'pi2/class.tx_tendflickr_pi2.php';
     }
 
     public function main($content,$conf) {
         $this->preSetDefault();
-        parent::main($content,$conf);
-        $this->preSetDefault();
 
-        $this->smarty->setPathToLanguageFile('EXT:tend_flickr/pi1/locallang.xml');
+        parent::main($content,$conf);
+
+        $this->preSetDefault();
+        $this->smarty->setPathToLanguageFile('EXT:tend_flickr/pi2/locallang.xml');
 
         return $this->displayUploadForm();
     }
 
     /* Display upload form */
-    private function displayUploadForm(){
+    private function displayUploadForm() {
         $this->smarty->assign("typo3_form",
                 array("action"=>$this->pi_getPageLink($GLOBALS['TSFE']->id), "name"=>$this->prefixId));
+
+        $error = false;
+        $field_req = explode(",","title,description,author,pid");
+        $data = array();
+        foreach($field_req as $key) {
+            if(trim($this->piVars[$key])!="") {
+                $data[$key] = trim($this->piVars[$key]);
+            } else
+                $error = true;
+        }
+
+        $file_name = "";
+        if($error==false){
+            $ff = t3lib_div::makeInstance('t3lib_basicFileFunctions');
+            $name = $_FILES["tx_tendflickr_pi2"]["name"]["photo"];
+
+            $name = $ff->getUniqueName($name,"uploads/tx_tendflickr");
+            $file_name = basename($name);
+            if(!move_uploaded_file($_FILES["tx_tendflickr_pi2"]["tmp_name"]["photo"], $name))
+                $error = true;
+        };
+
+        if($error==false) {
+             $data = array_merge($data,array("crdate"=>time(),"tstamp"=>time(),"photo"=>$file_name));
+             $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_tendflickr_photo',$data);
+        }
+
+        if($error==false)   $this->smarty->assign("done",true);
+
         $this->smarty->assign("upl_use_css","1"); // For TS
-        
+        $this->smarty->assign("pid",($this->conf_ts["flickr."]["goto_pid"]));
+        $this->smarty->assign("data",$this->piVars);
+
+
+        //var_dump($this->piVars);
+
         return $this->smarty->display("flickr_upload.xhtml");
     }
 

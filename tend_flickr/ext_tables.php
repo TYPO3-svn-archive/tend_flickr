@@ -32,6 +32,7 @@ if (TYPO3_MODE == 'BE')	{
 
 /* Flex forms */
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pi1', 'FILE:EXT:'.$_EXTKEY.'/pi1/flexform_ds_pi1.xml');
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pi2', 'FILE:EXT:'.$_EXTKEY.'/pi2/flexform_ds_pi2.xml');
 
 /* Backend extensions */
 // Whats this dude?! Gives problems on 4.3...
