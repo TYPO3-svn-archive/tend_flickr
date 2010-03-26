@@ -1,4 +1,7 @@
 # By Oto Brglez - <otobrglez@tend.si>
+
+# SVN JE KUL!
+
 # Powered by ORG. TEND d.o.o. - www.tend.si
 
 ####################################################################################################
