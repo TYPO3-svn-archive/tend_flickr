@@ -164,8 +164,7 @@ class tx_tendflickr {
         $alt = !empty($params["alt"])?trim($params["alt"]): $photo["title"];
         $css_class = !empty($params["class"])?trim($params["class"]): "flickr_image";
         $photo["id"] = isset($photo["primary"])?$photo["primary"]:$photo["id"];
-
-
+        
         //TODO: Width and height...
         /*
         $width = !empty($params["width"])?trim($params["width"]):"";
