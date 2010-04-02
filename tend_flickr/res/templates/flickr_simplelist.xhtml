@@ -1,11 +1,13 @@
+{$templateData.preContent}
+
 <div id="flickr_simplelist">
-<ul>
-{foreach from=$photos item="photo"}
-<li class="flickr_item">
-    {flickr_image photo=$photo size=box}
-</li>
-{/foreach}
-</ul>
+	<ul>
+	{foreach from=$photos item="photo"}
+		<li class="flickr_item">
+		       {flickr_image photo=$photo size=box}
+		</li>
+	{/foreach}
+	</ul>
 </div>
 
 <div id="flickr_info">
@@ -13,3 +15,5 @@
     {translate}cache.until{/translate}{$cache_till} ({$cache_time_diff})  -
 {/if}Powered by <a href="http://www.tend.org">tend_flickr</a>
 </div>
+
+{$templateData.postContent}
