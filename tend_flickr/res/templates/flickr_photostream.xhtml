@@ -3,11 +3,12 @@
 <div id="flickr_photostream">
     <ul>
         {foreach from=$photos item="photo"}
-        <li class="flickr_item">
+        <li class="flickr_item" {if $photo.display == "none"} style="display:none;" {/if}>
            {flickr_link photo=$photo targetType=image target=_blank rel=tendx }
-              {flickr_image photo=$photo size=box}
+              {if $photo.display != "none"}
+                {flickr_image photo=$photo size=box}
+              {/if}
            {/flickr_link}
-            <span class="title">{$photo.title}</span>
         </li>
         {/foreach}
     </ul>

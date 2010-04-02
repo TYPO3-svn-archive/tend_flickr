@@ -162,7 +162,6 @@ class tx_tendflickr {
 
     public static function smarty_flickr_image_url($params){
         return tx_tendflickr::smarty_flickr_image($params);
-
     }
 
     /* This function handles smarty flickr_image */
@@ -175,12 +174,6 @@ class tx_tendflickr {
         $css_class = !empty($params["class"])?trim($params["class"]): "flickr_image";
         $photo["id"] = isset($photo["primary"])?$photo["primary"]:$photo["id"];
         
-        //TODO: Width and height...
-        /*
-        $width = !empty($params["width"])?trim($params["width"]):"";
-        $height = !empty($params["height"])?trim($params["height"]):"";
-        */
-
         switch(strtolower($size)) {
             case "square": case "box": case "q": $size = "_s";
                 break;
@@ -198,18 +191,17 @@ class tx_tendflickr {
 
         if($smarty!=false){
             return sprintf('<img src="http://farm%1$s.static.flickr.com/%2$s/%3$s_%4$s%5$s.jpg"
-                title="%6$s" alt="%7$s" class="%8$s" />',
+                title="%6$s" alt="%7$s" class="%8$s" style="%9$s"/>',
                     $photo["farm"], $photo["server"], $photo["id"],
                     $photo["secret"], $size, $title,
-                    $alt, $css_class
-                    /*, $width, $height */
+                    $alt, $css_class,
+                    (($photo["display"]=="none")?" display:none; ":"")
             );
         } else {
            return sprintf('http://farm%1$s.static.flickr.com/%2$s/%3$s_%4$s%5$s.jpg',
                     $photo["farm"], $photo["server"], $photo["id"],
                     $photo["secret"], $size, $title,
                     $alt, $css_class
-                    /*, $width, $height */
             );
         }
     }
