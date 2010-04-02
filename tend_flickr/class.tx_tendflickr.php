@@ -59,7 +59,10 @@ class tx_tendflickr {
     public function debugGetLastRestCall() {
         return array("dbg_rest_callstr"=>$this->dbg_rest_callstr,
                 "dbg_rest_params"=>$this->dbg_rest_params,
-                "dbg_rest_method"=>$this->dbg_rest_method);
+                "dbg_rest_method"=>$this->dbg_rest_method,
+                "dbg_last_method"=>$this->dbg_last_method,
+                "dbg_params_raw"=>$this->dbg_params_raw,
+                );
     }
 
     /* Call of method */
@@ -67,7 +70,9 @@ class tx_tendflickr {
         if(strpos($method, "rest",0) !== false) {
             $this->last_response = false;
             if(isset($params[0]) || $params!=false) $params = $params[0];
+            $this->dbg_params_raw = $params;
 
+            $this->dbg_last_method = $method;
             $method = strtolower(str_replace("_",".",substr($method,4)));
             $this->dbg_rest_method = $method;
 
@@ -155,8 +160,13 @@ class tx_tendflickr {
         return $p;
     }
 
+    public static function smarty_flickr_image_url($params){
+        return tx_tendflickr::smarty_flickr_image($params);
+
+    }
+
     /* This function handles smarty flickr_image */
-    public static function smarty_flickr_image($params, &$smarty) {
+    public static function smarty_flickr_image($params, /*&*/ $smarty=false) {
 
         $photo = $params["photo"];
         $size = empty($params["size"])?"small":$params["size"];
@@ -186,13 +196,22 @@ class tx_tendflickr {
                 break;
         }
 
-        return sprintf('<img src="http://farm%1$s.static.flickr.com/%2$s/%3$s_%4$s%5$s.jpg"
-            title="%6$s" alt="%7$s" class="%8$s" />',
-                $photo["farm"], $photo["server"], $photo["id"],
-                $photo["secret"], $size, $title,
-                $alt, $css_class
-                /*, $width, $height */
-        );
+        if($smarty!=false){
+            return sprintf('<img src="http://farm%1$s.static.flickr.com/%2$s/%3$s_%4$s%5$s.jpg"
+                title="%6$s" alt="%7$s" class="%8$s" />',
+                    $photo["farm"], $photo["server"], $photo["id"],
+                    $photo["secret"], $size, $title,
+                    $alt, $css_class
+                    /*, $width, $height */
+            );
+        } else {
+           return sprintf('http://farm%1$s.static.flickr.com/%2$s/%3$s_%4$s%5$s.jpg',
+                    $photo["farm"], $photo["server"], $photo["id"],
+                    $photo["secret"], $size, $title,
+                    $alt, $css_class
+                    /*, $width, $height */
+            );
+        }
     }
 } // eof class
 

@@ -275,8 +275,8 @@ class tx_tendflickr_pi1 extends tslib_pibase {
 
     /* Changes before display */
     public function smarty_display($template){
-        // Generic hooks
 
+        // Generic hooks
         $hook_name = "preDisplay".ucfirst($this->view_p)."Hook";
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tend_flickr'][$hook_name]))
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tend_flickr'][$hook_name] as $cRef)
