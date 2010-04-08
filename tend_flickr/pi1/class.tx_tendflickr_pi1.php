@@ -338,13 +338,24 @@ class tx_tendflickr_pi1 extends tslib_pibase {
         return $config['items'] = array_merge($config['items'],$optionList);
     }
 
+    public function getPhotosetsForFlexFormLite(&$config,&$item){
+        $data = $this->getPhotosetsForFlexForm($config, $item);
+        $optionList[] = array("All photosets","ALL","[icon]");
+        return $config['items'] = array_merge($optionList,$config['items']);
+    }
+
     public function getPhotosetsForFlexForm(&$config, &$item) {
         $api_key = false;
         $flex = new SimpleXMLElement($config["row"]["pi_flexform"]);
         $api_key = @ (array)$flex->xpath("/T3FlexForms/data/sheet[@index=\"display\"]//field[@index=\"api_key\"]/value");
-        $api_key = $api_key[0];
+        $api_key = $api_key[0]; //photosets_user_id
         $user_id = @ (array)$flex->xpath("/T3FlexForms/data/sheet[@index=\"sDEF\"]//field[@index=\"viewphotoset_user_id\"]/value");
         $user_id = $user_id[0];
+
+        if(!$user_id){
+            $user_id = @ (array)$flex->xpath("/T3FlexForms/data/sheet[@index=\"sDEF\"]//field[@index=\"photosets_user_id\"]/value");
+            $user_id = $user_id[0];
+        }
 
         if(trim($api_key)!="" && trim($user_id)!="") {
             $flickr = tx_tendflickr::getInstance();
