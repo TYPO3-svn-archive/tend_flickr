@@ -235,8 +235,6 @@ class tx_tendflickr_pi1 extends tslib_pibase {
     private function displayPhotosets() {
         $this->addCSS("flickr_photosets.css");
 
-        var_dump($this->conf_ts["show."]["params."]);
-
         $params = tx_tendflickr_pi1::ParseTSFlickrParams($this->flickr,$this->conf_ts["show."]["params."]);
         $params = array_merge($params,array("extras"=>"owner_name,icon_server,original_format,
             last_update,geo,tags,machine_tags,o_dims,views,media,path_aliasurl_sq,url_t,url_s,url_m,url_o"));
