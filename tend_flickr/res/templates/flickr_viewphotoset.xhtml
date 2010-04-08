@@ -1,9 +1,10 @@
+{$templateData.preContent}
 
 {if $vps_show_picker=="1"}{literal}
 <script language="javascript">
 function gotoPage(list) {
     location.href=list.options[list.selectedIndex].value
-}
+};
 </script>
 {/literal}{/if}
 
@@ -19,13 +20,12 @@ function gotoPage(list) {
     <div id="photoset">
         <ul>
             {foreach from=$photos item="photo"}
-            <li class="flickr_photo">
-                <div class="image">
-                    {flickr_image photo=$photo size=box title=$photo.title alt=$photo.title }
-                </div>
-                <div class="desc">
-                    {$photo.title}
-                </div>
+            <li class="flickr_photo" {if $photo.display == "none"} style="display:none;" {/if}>
+               {flickr_link photo=$photo targetType=image target=_blank rel=tendx }
+                  {if $photo.display != "none"}
+                    {flickr_image photo=$photo size=box title=$photo.title alt=$photo.title}
+                  {/if}
+               {/flickr_link}
             </li>
             {/foreach}
         </ul>
@@ -58,3 +58,5 @@ function gotoPage(list) {
     {/if}
 
 </div>
+
+{$templateData.postContent}
