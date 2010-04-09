@@ -6,11 +6,22 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="moj.naslov">Text Position</label>
-			<label index="config.errorMessage">Error in configuration of plugin tx_tendflickr_pi1! Please read documentation!</label>
-                        <label index="config.errorMissingMethod">Requested method does not exist! Perhapse not implemented?! Method: </label>
-                        <label index="config.errorFlickrAPI.title">Flickr API Error!</label>
-                        <label index="cache.until">Cached to time: </label>
+			<label index="upload.upload">Upload</label>
+                        <label index="upload.photo">Photo</label>
+                        <label index="upload.author">Author</label>
+                        <label index="upload.description">Description</label>
+                        <label index="upload.doit">Upload it...</label>
+                        <label index="upload.title">Title</label>
+                        <label index="upload.done">Upload done...</label>
+		</languageKey>
+                <languageKey index="si" type="array">
+			<label index="upload.upload">Prenos</label>
+                        <label index="upload.photo">Fotografija</label>
+                        <label index="upload.author">Avtor</label>
+                        <label index="upload.description">Opis</label>
+                        <label index="upload.doit">Naloži...</label>
+                        <label index="upload.title">Naslov</label>
+                        <label index="upload.done">Prenos je uspel...</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -11,6 +11,23 @@
                         <label index="config.errorMissingMethod">Requested method does not exist! Perhapse not implemented?! Method: </label>
                         <label index="config.errorFlickrAPI.title">Flickr API Error!</label>
                         <label index="cache.until">Cached to time: </label>
+                        <label index="g.video">Video</label>
+                        <label index="g.videos">Videos</label>
+                        <label index="g.photo">Photo</label>
+                        <label index="g.photos">Photos</label>
+                        <label index="upload.upload">Upload</label>
+		</languageKey>
+                <languageKey index="si" type="array">
+			<label index="moj.naslov">Text Position</label>
+			<label index="config.errorMessage">Napaka pri konfiguraciji plugina tx_tendflickr_pi1 je prišlo do napake!</label>
+                        <label index="config.errorMissingMethod">Zahtevana metoda je nedosegljiva. Mogoče ni implementirana? Metoda:</label>
+                        <label index="config.errorFlickrAPI.title">Flickr API Napaka!</label>
+                        <label index="cache.until">Shranjeno do: </label>
+                        <label index="g.video">Video</label>
+                        <label index="g.videos">Video posnetki</label>
+                        <label index="g.photo">Fotografija</label>
+                        <label index="g.photos">Fotografije</label>
+                        <label index="upload.upload">Prenos...</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -1,60 +1,56 @@
 {if $upl_use_css=="1"}
 {literal}
-<style type="text/css" media="all">
-    div#flickr_upload li, div#flickr_upload ul{ list-style: none; padding:0; margin: 0;  }
-    div#flickr_upload li{ display: block; width: 100%; float: none; clear:both; margin-bottom: 15px;}
-    #flickr_upload .label{ display: block; width:100%; clear:both; float: none; }
-    #flickr_upload input, #flickr_upload textarea { width: 300px; text-align:left; }
-</style>
+    <style type="text/css" media="all">
+        div#flickr_upload li, div#flickr_upload ul{ list-style: none; padding:0; margin: 0;  }
+        div#flickr_upload li{ display: block; width: 100%; float: none; clear:both; margin-bottom: 15px;}
+        #flickr_upload .label{ display: block; width:100%; clear:both; float: none; }
+        #flickr_upload input, #flickr_upload textarea { width: 300px; text-align:left; }
+    </style>
 {/literal}{/if}
 
 <div id="flickr_upload" class="{$typo3_form.name}">
+
     {if $done }
-
-    <div id="status" class="done">
-        <font style="color:red; font-weight: bold;">Saved... //TODO: Tukaj pripravite ustrezno besedilo!<br/></font>
-    </div>
-
+        <div id="status" class="done">
+            <font style="color:red; font-weight: bold;">{translate}upload.done{/translate}<br/></font>
+        </div>
     {/if}
-
 
     <form name="{$typo3_form.name}" action="{$typo3_form.action}" method="post" class="{$typo3_form.name}" enctype="multipart/form-data">
         <ul>
             <li>
                 <label>
-                    <span class="label">Title {if !$data.title}*{/if}</span>
+                    <span class="label">{translate}upload.title{/translate} {if !$data.title}*{/if}</span>
                     <input name="{$typo3_form.name}[title]" id="{$typo3_form.name}[title]" type="text" value="{$data.title}"/>
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Description {if !$data.description}*{/if}</span>
+                    <span class="label">{translate}upload.description{/translate} {if !$data.description}*{/if}</span>
                     <textarea name="{$typo3_form.name}[description]" id="{$typo3_form.name}[description]" cols="40" rows="5">{$data.description}</textarea>
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Author {if !$data.author}*{/if}</span>
+                    <span class="label">{translate}upload.author{/translate} {if !$data.author}*{/if}</span>
                     <input name="{$typo3_form.name}[author]" id="{$typo3_form.name}[author]" value="{$data.author}"/>
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Photo {if !$data.photo}*{/if}</span>
+                    <span class="label">{translate}upload.photo{/translate} {if !$data.photo}*{/if}</span>
                     <input name="{$typo3_form.name}[photo]" id="{$typo3_form.name}[photo]" type="file" />
                 </label>
             </li>
             <li>
                 <label>
-                    <span class="label">Upload</span>
+                    <span class="label">{translate}upload.upload{/translate}</span>
                     <input name="{$typo3_form.name}[pid]" id="{$typo3_form.name}[pid]" type="hidden" value="{$pid}"/>
                     <input type="hidden" name="MAX_FILE_SIZE" value="300000" />
-                    <input name="{$typo3_form.name}[submit]" id="{$typo3_form.name}[submit]" type="submit" value="Upload photo..." />
+                    <input name="{$typo3_form.name}[submit]" id="{$typo3_form.name}[submit]" type="submit" value="{translate}upload.doit{/translate}" />
                 </label>
 
             </li>
-
         </ul>
-
     </form>
 </div>

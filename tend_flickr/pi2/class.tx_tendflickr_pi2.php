@@ -71,6 +71,8 @@ class tx_tendflickr_pi2 extends tx_tendflickr_pi1 {
         $this->smarty->assign("pid",($this->conf_ts["flickr."]["goto_pid"]));
         $this->smarty->assign("data",$this->piVars);
 
+    //    $this->smarty->setPathToLanguageFile('EXT:tend_flickr/pi2/locallang.xml');
+
         return $this->smarty->display("flickr_upload.xhtml");
     }
 
